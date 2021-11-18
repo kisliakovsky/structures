@@ -1,19 +1,17 @@
-from typing import List
+from typing import List, TypeVar, Generic, Optional
+
+T = TypeVar('T')
 
 
-class Stack(object):
-    # noinspection PyDefaultArgument
-    def __init__(self, data: List = []):
-        self.__data = data.copy()
+class Stack(Generic[T]):
+    def __init__(self) -> None:
+        self.__data: List[T] = []
 
-    def push(self, item):
+    def push(self, item: T) -> None:
         self.__data.append(item)
 
-    def is_empty(self) -> bool:
-        return len(self.__data) == 0
+    def pop(self) -> Optional[T]:
+        return self.__data.pop() if self.__data else None
 
-    def pop(self):
-        return self.__data.pop()
-
-    def as_list(self) -> List:
+    def as_list(self) -> List[T]:
         return self.__data.copy()
