@@ -15,8 +15,5 @@ class Stack(object):
     def pop(self):
         return self.__data.pop()
 
-    def peak(self):
-        return self.__data[-1]
-
     def as_list(self) -> List:
         return self.__data.copy()

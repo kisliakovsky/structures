@@ -19,9 +19,17 @@ class BracketRuleValidation(object):
         stack = Stack()
         for i, char in enumerate(chars):
             if char in self.__opening_brackets:
-                stack.push(char)
+                stack.push((i, char))
             elif char in self.__closing_brackets:
                 paired_bracket = self.__bracket_pairs[char]
-                if stack.is_empty() or (stack.pop() != paired_bracket):
+                if stack.is_empty():
                     return ValidationResult(i + 1)
-        return ValidationResult() if stack.is_empty() else ValidationResult(len(chars))
+                else:
+                    j, opening_bracket = stack.pop()
+                    if opening_bracket != paired_bracket:
+                        return ValidationResult(i + 1)
+        if stack.is_empty():
+            return ValidationResult()
+        else:
+            j, opening_bracket = stack.pop()
+            return ValidationResult(j + 1)

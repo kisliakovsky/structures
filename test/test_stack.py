@@ -12,16 +12,6 @@ class TestStack(TestCase):
         stack.push('C')
         self.assertEqual(['A', 'B', 'C'], stack.as_list())
 
-    def test_peak(self):
-        stack = Stack(['A', 'B', 'C'])
-        self.assertEqual('C', stack.peak())
-        self.assertEqual(['A', 'B', 'C'], stack.as_list())
-
-    def test_peak_from_empty_stack(self):
-        stack = Stack()
-        with self.assertRaises(IndexError):
-            stack.peak()
-
     def test_pop(self):
         stack = Stack(['A'])
         self.assertEqual('A', stack.pop())
