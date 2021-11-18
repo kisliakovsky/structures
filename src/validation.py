@@ -15,7 +15,7 @@ class BracketRuleValidation(object):
         self.__opening_brackets = set(self.__bracket_pairs.values())
         self.__closing_brackets = set(self.__bracket_pairs.keys())
 
-    def run(self, chars):
+    def run(self, chars) -> ValidationResult:
         stack = Stack()
         for i, char in enumerate(chars):
             if char in self.__opening_brackets:
