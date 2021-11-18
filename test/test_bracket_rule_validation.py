@@ -13,7 +13,7 @@ class TestBracketRuleValidation(TestCase):
         self.assertEqual("Success", str(validation.run("(())")))
         self.assertEqual("Success", str(validation.run("{[]}()")))
         self.assertEqual("Success", str(validation.run("([](){([])})")))
-        self.assertEqual("Success", str(validation.run("foo(bar)")))
+        self.assertEqual("Success", str(validation.run("foo(bar);")))
 
     def test_error_run(self):
         validation = BracketRuleValidation()
@@ -22,5 +22,5 @@ class TestBracketRuleValidation(TestCase):
         self.assertEqual('3', str(validation.run("{[}")))
         self.assertEqual('7', str(validation.run("{{[()]]")))
         self.assertEqual('5', str(validation.run("()[]}")))
-        self.assertEqual('10', str(validation.run("foo(bar[i)")))
+        self.assertEqual('10', str(validation.run("foo(bar[i);")))
 
