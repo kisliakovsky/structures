@@ -1,6 +1,7 @@
+import sys
 from unittest import TestCase
 
-from src.stack import Stack
+from src.stack import Stack, StackWithMaxValue
 
 
 class TestStack(TestCase):
@@ -18,3 +19,17 @@ class TestStack(TestCase):
         self.assertEqual('A', stack.pop())
         self.assertEqual(None, stack.pop())
         self.assertEqual([], stack.as_list())
+
+    def test_peak(self):
+        stack = Stack()
+        stack.push('A')
+        self.assertEqual('A', stack.peak())
+        self.assertEqual(['A'], stack.as_list())
+        stack.pop()
+        self.assertEqual(None, stack.peak())
+
+    def test_is_empty(self):
+        stack = Stack()
+        self.assertTrue(stack.is_empty())
+        stack.push('A')
+        self.assertFalse(stack.is_empty())
