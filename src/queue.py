@@ -53,16 +53,19 @@ class Queue(AbstractQueue[T]):
 class QueueWithMaxValue(AbstractQueue[int]):
     def __init__(self):
         self.__queue: Queue[int] = Queue[int]()
+        self.__prev_item: Optional[int] = None
         self.__maximums: Queue[int] = Queue[int]()
 
     def enqueue(self, item: T) -> None:
-        maximums = Queue[int]()
-        while not self.__maximums.is_empty():
-            maximum = self.__maximums.dequeue()
-            if maximum >= item:
-                maximums.enqueue(maximum)
-        maximums.enqueue(item)
-        self.__maximums = maximums
+        if self.__prev_item is not None and self.__prev_item < item:
+            maximums = Queue[int]()
+            while not self.__maximums.is_empty():
+                maximum = self.__maximums.dequeue()
+                if maximum >= item:
+                    maximums.enqueue(maximum)
+            self.__maximums = maximums
+        self.__maximums.enqueue(item)
+        self.__prev_item = item
         self.__queue.enqueue(item)
 
     def dequeue(self) -> Optional[T]:
