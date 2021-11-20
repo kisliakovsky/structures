@@ -25,7 +25,7 @@ class BracketRuleValidation:
                 self.__stacked_brackets.push((i, char))
             elif char in self.__closing_brackets:
                 index_and_bracket = self.__stacked_brackets.pop()
-                if (index_and_bracket is None) or (index_and_bracket[1] != self.__opening_bracket(char)):
+                if index_and_bracket is None or index_and_bracket[1] != self.__opening_bracket(char):
                     return ValidationResult(i + 1)
         index_and_bracket = self.__stacked_brackets.pop()
         return ValidationResult() if index_and_bracket is None else ValidationResult(index_and_bracket[0] + 1)
