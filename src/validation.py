@@ -19,7 +19,7 @@ class BracketRuleValidation:
         self.__stacked_brackets: Optional[Stack[Tuple[int, str]]] = None
 
     def run(self, chars) -> ValidationResult:
-        self.__stacked_brackets = Stack()
+        self.__stacked_brackets = Stack[str]()
         for i, char in enumerate(chars):
             if char in self.__opening_brackets:
                 self.__stacked_brackets.push((i, char))

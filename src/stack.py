@@ -45,8 +45,8 @@ class Stack(AbstractStack[T]):
 
 class StackWithMaxValue(AbstractStack[int]):
     def __init__(self):
-        self.__stack: Stack[int] = Stack()
-        self.__maximums: Stack[int] = Stack()
+        self.__stack: Stack[int] = Stack[int]()
+        self.__maximums: Stack[int] = Stack[int]()
 
     def push(self, item: int) -> None:
         if self.__stack.is_empty():
