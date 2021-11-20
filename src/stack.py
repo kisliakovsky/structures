@@ -40,7 +40,7 @@ class Stack(AbstractStack[T]):
         return not self.__data
 
     def as_list(self) -> List[T]:
-        return self.__data.copy()
+        return self.__data[:]
 
 
 class StackWithMaxValue(AbstractStack[int]):
@@ -64,7 +64,7 @@ class StackWithMaxValue(AbstractStack[int]):
         self.__maximums.pop()
         return self.__stack.pop()
 
-    def max(self) -> Optional[int]:
+    def maximum(self) -> Optional[int]:
         return self.__maximums.peak()
 
     def is_empty(self) -> bool:

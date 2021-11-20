@@ -25,10 +25,10 @@ class TestStackWithMaxValue(TestCase):
         stack.push(1)
         self.assertFalse(stack.is_empty())
 
-    def test_max(self):
+    def test_maximum(self):
         stack = StackWithMaxValue()
         stack.push(1)
         stack.push(2)
-        self.assertEqual(2, stack.max())
+        self.assertEqual(2, stack.maximum())
         stack.pop()
-        self.assertEqual(1, stack.max())
+        self.assertEqual(1, stack.maximum())
