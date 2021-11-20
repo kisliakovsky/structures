@@ -1,7 +1,6 @@
-import sys
 from unittest import TestCase
 
-from src.stack import Stack, StackWithMaxValue
+from src.stack import Stack
 
 
 class TestStack(TestCase):
