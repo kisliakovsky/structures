@@ -15,6 +15,10 @@ class AbstractStack(ABC, Generic[T]):
         pass
 
     @abstractmethod
+    def peak(self) -> Optional[T]:
+        pass
+
+    @abstractmethod
     def is_empty(self) -> bool:
         pass
 
@@ -66,6 +70,9 @@ class StackWithMaxValue(AbstractStack[int]):
     def pop(self) -> Optional[int]:
         self.__maximums.pop()
         return self.__stack.pop()
+
+    def peak(self) -> Optional[int]:
+        return self.__stack.peak()
 
     def maximum(self) -> Optional[int]:
         return self.__maximums.peak()

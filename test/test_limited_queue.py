@@ -1,20 +1,36 @@
-import sys
 from unittest import TestCase
 
-from src.queue import Queue
+from src.queue import LimitedQueue, FullQueueError
 
 
-class TestQueue(TestCase):
+class TestLimitedQueue(TestCase):
 
     def test_enqueue(self):
-        queue = Queue[str]()
+        queue = LimitedQueue[str](3)
         queue.enqueue('A')
         queue.enqueue('B')
         queue.enqueue('C')
         self.assertEqual(['C', 'B', 'A'], queue.as_list())
 
+    def test_limit(self):
+        queue = LimitedQueue[str](3)
+        queue.enqueue('A')
+        queue.enqueue('B')
+        queue.enqueue('C')
+        with self.assertRaises(FullQueueError):
+            queue.enqueue('D')
+
+    def test_is_full(self):
+        queue = LimitedQueue[str](3)
+        self.assertFalse(queue.is_full())
+        queue.enqueue('A')
+        self.assertFalse(queue.is_full())
+        queue.enqueue('B')
+        queue.enqueue('C')
+        self.assertTrue(queue.is_full())
+
     def test_dequeue(self):
-        queue = Queue[str]()
+        queue = LimitedQueue[str](3)
         queue.enqueue('A')
         queue.enqueue('B')
         self.assertEqual('A', queue.dequeue())
@@ -23,7 +39,7 @@ class TestQueue(TestCase):
         self.assertEqual([], queue.as_list())
 
     def test_peak(self):
-        queue = Queue[str]()
+        queue = LimitedQueue[str](3)
         queue.enqueue('A')
         queue.enqueue('B')
         self.assertEqual('A', queue.peak())
@@ -33,14 +49,7 @@ class TestQueue(TestCase):
         self.assertEqual(None, queue.peak())
 
     def test_is_empty(self):
-        queue = Queue[str]()
+        queue = LimitedQueue[str](3)
         self.assertTrue(queue.is_empty())
         queue.enqueue('A')
         self.assertFalse(queue.is_empty())
-
-    def test_len(self):
-        queue = Queue[str]()
-        queue.enqueue('A')
-        queue.enqueue('B')
-        queue.enqueue('C')
-        self.assertEqual(3, len(queue))

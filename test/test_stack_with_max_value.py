@@ -19,6 +19,14 @@ class TestStackWithMaxValue(TestCase):
         self.assertEqual(None, stack.pop())
         self.assertEqual([], stack.as_list())
 
+    def test_peak(self):
+        stack = StackWithMaxValue()
+        stack.push(1)
+        self.assertEqual(1, stack.peak())
+        self.assertEqual([1], stack.as_list())
+        stack.pop()
+        self.assertEqual(None, stack.peak())
+
     def test_is_empty(self):
         stack = StackWithMaxValue()
         self.assertTrue(stack.is_empty())
