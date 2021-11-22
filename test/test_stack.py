@@ -32,3 +32,10 @@ class TestStack(TestCase):
         self.assertTrue(stack.is_empty())
         stack.push('A')
         self.assertFalse(stack.is_empty())
+
+    def test_size(self):
+        stack = Stack[str]()
+        stack.push('A')
+        stack.push('B')
+        stack.push('C')
+        self.assertEqual(3, len(stack))

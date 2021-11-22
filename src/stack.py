@@ -42,6 +42,9 @@ class Stack(AbstractStack[T]):
     def as_list(self) -> List[T]:
         return self.__data[:]
 
+    def __len__(self):
+        return len(self.__data)
+
 
 class StackWithMaxValue(AbstractStack[int]):
     def __init__(self):
