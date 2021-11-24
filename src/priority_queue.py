@@ -1,6 +1,6 @@
 from typing import Generic, TypeVar, List, Optional
 
-from src.binary_heap import HeapNode, BinaryMaxHeap
+from src.binary_heap import HeapNode, BinaryMaxHeap, BinaryHeap
 from src.queue import AbstractQueue
 
 T = TypeVar('T')
@@ -35,8 +35,8 @@ class PrioritizedItem(Generic[T]):
 
 
 class PriorityQueue(AbstractQueue[PrioritizedItem[T]]):
-    def __init__(self):
-        self.__heap = BinaryMaxHeap[T]([])
+    def __init__(self, heap: BinaryHeap[T]):
+        self.__heap = heap
 
     def enqueue(self, item: PrioritizedItem[T]) -> None:
         self.__heap.push(item.as_heap_node())

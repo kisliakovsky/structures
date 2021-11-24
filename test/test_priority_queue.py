@@ -1,12 +1,13 @@
 from unittest import TestCase
 
+from src.binary_heap import BinaryMaxHeap
 from src.priority_queue import PriorityQueue, PrioritizedItem
 
 
 class TestPriorityQueue(TestCase):
 
     def test_enqueue(self):
-        queue = PriorityQueue[str]()
+        queue = PriorityQueue[str](BinaryMaxHeap[str]([]))
         queue.enqueue(PrioritizedItem[str](14, 'A'))
         queue.enqueue(PrioritizedItem[str](5, 'B'))
         queue.enqueue(PrioritizedItem[str](7, 'C'))
@@ -29,7 +30,7 @@ class TestPriorityQueue(TestCase):
         ], queue.as_list())
 
     def test_dequeue(self):
-        queue = PriorityQueue[str]()
+        queue = PriorityQueue[str](BinaryMaxHeap[str]([]))
         queue.enqueue(PrioritizedItem[str](14, 'A'))
         queue.enqueue(PrioritizedItem[str](5, 'B'))
         queue.enqueue(PrioritizedItem[str](7, 'C'))
@@ -50,7 +51,7 @@ class TestPriorityQueue(TestCase):
         self.assertEqual(PrioritizedItem[str](5, 'B'), queue.dequeue())
 
     def test_peak(self):
-        queue = PriorityQueue[str]()
+        queue = PriorityQueue[str](BinaryMaxHeap[str]([]))
         queue.enqueue(PrioritizedItem[str](14, 'A'))
         queue.enqueue(PrioritizedItem[str](5, 'B'))
         queue.enqueue(PrioritizedItem[str](7, 'C'))
@@ -74,7 +75,7 @@ class TestPriorityQueue(TestCase):
         ], queue.as_list())
 
     def test_change_priority(self):
-        queue = PriorityQueue[str]()
+        queue = PriorityQueue[str](BinaryMaxHeap[str]([]))
         queue.enqueue(PrioritizedItem[str](14, 'A'))
         queue.enqueue(PrioritizedItem[str](5, 'B'))
         queue.enqueue(PrioritizedItem[str](7, 'C'))
@@ -90,7 +91,7 @@ class TestPriorityQueue(TestCase):
         self.assertEqual(PrioritizedItem[str](43, 'H'), queue.peak())
 
     def test_delete(self):
-        queue = PriorityQueue[str]()
+        queue = PriorityQueue[str](BinaryMaxHeap[str]([]))
         queue.enqueue(PrioritizedItem[str](14, 'A'))
         queue.enqueue(PrioritizedItem[str](5, 'B'))
         queue.enqueue(PrioritizedItem[str](7, 'C'))
@@ -113,7 +114,7 @@ class TestPriorityQueue(TestCase):
         ], queue.as_list())
 
     def test_is_empty(self):
-        queue = PriorityQueue[str]()
+        queue = PriorityQueue[str](BinaryMaxHeap[str]([]))
         self.assertTrue(queue.is_empty())
         queue.enqueue(PrioritizedItem[str](14, 'A'))
         self.assertFalse(queue.is_empty())
