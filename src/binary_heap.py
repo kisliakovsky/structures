@@ -5,28 +5,28 @@ T = TypeVar('T')
 
 
 class HeapNode(Generic[T]):
-    def __init__(self, value: T, priority: int):
+    def __init__(self, key: int, value: T):
+        self.__key = key
         self.__value = value
-        self.__priority = priority
+
+    def key(self) -> int:
+        return self.__key
 
     def value(self) -> T:
         return self.__value
 
-    def priority(self) -> int:
-        return self.__priority
-
     def __eq__(self, other):
         if isinstance(other, HeapNode):
-            return self.__value == other.__value and self.__priority == other.__priority
+            return self.__key == other.__key and self.__value == other.__value
         else:
             return False
 
     def __str__(self):
-        return f"[{self.__value}, {self.__priority}]"
+        return f"[{self.__key}, {self.__value}]"
 
     @staticmethod
-    def heap_node(node, priority):
-        return HeapNode(node.value(), priority)
+    def heap_node(key: int, node):
+        return HeapNode(key, node.value())
 
 
 class HeapNodeComparison(Generic[T], ABC):
@@ -39,13 +39,13 @@ class HeapNodeComparison(Generic[T], ABC):
 class MinHeapNodeComparison(HeapNodeComparison[T]):
 
     def perform(self, first_node: HeapNode[T], second_node: HeapNode[T]) -> int:
-        return second_node.priority() - first_node.priority()
+        return second_node.key() - first_node.key()
 
 
 class MaxHeapNodeComparison(HeapNodeComparison[T]):
 
     def perform(self, first_node: HeapNode[T], second_node: HeapNode[T]) -> int:
-        return first_node.priority() - second_node.priority()
+        return first_node.key() - second_node.key()
 
 
 class BinaryHeap(Generic[T], ABC):
@@ -66,10 +66,10 @@ class BinaryHeap(Generic[T], ABC):
     def peak(self) -> Optional[HeapNode[T]]:
         return self.__data[0] if self.__data else None
 
-    def change_priority(self, i: int, priority: int) -> None:
+    def change_key(self, i: int, key: int) -> None:
         if i < len(self.__data):
             item = self.__data[i]
-            self.__data[i] = HeapNode.heap_node(item, priority)
+            self.__data[i] = HeapNode.heap_node(key, item)
             if self.__comparison.perform(self.__data[i], item) > 0:
                 self.__sift_up(i)
             else:
@@ -80,12 +80,12 @@ class BinaryHeap(Generic[T], ABC):
     def __delitem__(self, i: int):
         if i < len(self.__data):
             if self.__comparison.perform(
-                    HeapNode.heap_node(self.__data[i], self.__data[0].priority() - 1),
-                    HeapNode.heap_node(self.__data[i], self.__data[0].priority() + 1)
+                    HeapNode.heap_node(self.__data[0].key() - 1, self.__data[i]),
+                    HeapNode.heap_node(self.__data[0].key() + 1, self.__data[i])
             ) > 0:
-                new_node = HeapNode.heap_node(self.__data[i], self.__data[0].priority() - 1)
+                new_node = HeapNode.heap_node(self.__data[0].key() - 1, self.__data[i])
             else:
-                new_node = HeapNode.heap_node(self.__data[i], self.__data[0].priority() + 1)
+                new_node = HeapNode.heap_node(self.__data[0].key() + 1, self.__data[i])
             self.__data[i] = new_node
             self.__sift_up(i)
             self.__pop()
