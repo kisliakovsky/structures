@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from src.binary_heap import Heap, MinIntKey, Entry
+from src.heap import Heap, MinIntKey, Entry
 
 
 class TestBinaryMinHeap(TestCase):

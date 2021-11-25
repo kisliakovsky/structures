@@ -1,6 +1,6 @@
 from typing import Tuple
 
-from src.binary_heap import Heap, Key, Unit
+from src.heap import Heap, Key, Unit
 from src.queue import LimitedQueue
 
 

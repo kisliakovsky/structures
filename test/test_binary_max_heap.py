@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from src.binary_heap import Heap, MaxIntKey, Entry
+from src.heap import Heap, MaxIntKey, Entry
 
 
 class TestBinaryMaxHeap(TestCase):
