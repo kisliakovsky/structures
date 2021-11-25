@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod, ABCMeta
-from typing import TypeVar, Generic, List, Optional, Tuple, Iterator
+from typing import TypeVar, Generic, List, Optional, Iterator
 
 K = TypeVar('K', bound='Key')
 V = TypeVar('V')
@@ -58,6 +58,7 @@ class MaxIntKey(Key['MaxIntKey']):
 
 
 class HeapNode(ABC, Generic[K, V, N]):
+
     @abstractmethod
     def key(self) -> K:
         pass
