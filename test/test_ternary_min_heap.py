@@ -6,7 +6,7 @@ from src.binary_heap import Heap, MinIntKey, Entry
 class TestBinaryMinHeap(TestCase):
 
     def test_init(self):
-        heap = Heap[MinIntKey, str](2, [
+        heap = Heap[MinIntKey, str](3, [
             Entry(MinIntKey(14), 'A'),
             Entry(MinIntKey(5), 'B'),
             Entry(MinIntKey(7), 'C'),
@@ -19,18 +19,18 @@ class TestBinaryMinHeap(TestCase):
         ])
         self.assertEqual([
             Entry(MinIntKey(5), 'B'),
-            Entry(MinIntKey(14), 'A'),
+            Entry(MinIntKey(11), 'G'),
             Entry(MinIntKey(7), 'C'),
             Entry(MinIntKey(18), 'D'),
             Entry(MinIntKey(42), 'E'),
             Entry(MinIntKey(12), 'F'),
-            Entry(MinIntKey(11), 'G'),
+            Entry(MinIntKey(14), 'A'),
             Entry(MinIntKey(18), 'H'),
             Entry(MinIntKey(29), 'I')
         ], heap.as_list())
 
     def test_push(self):
-        heap = Heap[MinIntKey, str](2, [])
+        heap = Heap[MinIntKey, str](3, [])
         heap.push(Entry(MinIntKey(14), 'A'))
         heap.push(Entry(MinIntKey(5), 'B'))
         heap.push(Entry(MinIntKey(7), 'C'))
@@ -42,18 +42,18 @@ class TestBinaryMinHeap(TestCase):
         heap.push(Entry(MinIntKey(29), 'I'))
         self.assertEqual([
             Entry(MinIntKey(5), 'B'),
-            Entry(MinIntKey(14), 'A'),
+            Entry(MinIntKey(11), 'G'),
             Entry(MinIntKey(7), 'C'),
             Entry(MinIntKey(18), 'D'),
             Entry(MinIntKey(42), 'E'),
+            Entry(MinIntKey(14), 'A'),
             Entry(MinIntKey(12), 'F'),
-            Entry(MinIntKey(11), 'G'),
             Entry(MinIntKey(18), 'H'),
             Entry(MinIntKey(29), 'I')
         ], heap.as_list())
 
     def test_pop(self):
-        heap = Heap[MinIntKey, str](2, [])
+        heap = Heap[MinIntKey, str](3, [])
         heap.push(Entry(MinIntKey(14), 'A'))
         heap.push(Entry(MinIntKey(5), 'B'))
         heap.push(Entry(MinIntKey(7), 'C'))
@@ -68,13 +68,13 @@ class TestBinaryMinHeap(TestCase):
         self.assertEqual(Entry(MinIntKey(11), 'G'), heap.pop())
         self.assertEqual(Entry(MinIntKey(12), 'F'), heap.pop())
         self.assertEqual(Entry(MinIntKey(14), 'A'), heap.pop())
-        self.assertEqual(Entry(MinIntKey(18), 'D'), heap.pop())
         self.assertEqual(Entry(MinIntKey(18), 'H'), heap.pop())
+        self.assertEqual(Entry(MinIntKey(18), 'D'), heap.pop())
         self.assertEqual(Entry(MinIntKey(29), 'I'), heap.pop())
         self.assertEqual(Entry(MinIntKey(42), 'E'), heap.pop())
 
     def test_peak(self):
-        heap = Heap[MinIntKey, str](2, [])
+        heap = Heap[MinIntKey, str](3, [])
         heap.push(Entry(MinIntKey(14), 'A'))
         heap.push(Entry(MinIntKey(5), 'B'))
         heap.push(Entry(MinIntKey(7), 'C'))
@@ -87,18 +87,18 @@ class TestBinaryMinHeap(TestCase):
         self.assertEqual(Entry(MinIntKey(5), 'B'), heap.peak())
         self.assertEqual([
             Entry(MinIntKey(5), 'B'),
-            Entry(MinIntKey(14), 'A'),
+            Entry(MinIntKey(11), 'G'),
             Entry(MinIntKey(7), 'C'),
             Entry(MinIntKey(18), 'D'),
             Entry(MinIntKey(42), 'E'),
+            Entry(MinIntKey(14), 'A'),
             Entry(MinIntKey(12), 'F'),
-            Entry(MinIntKey(11), 'G'),
             Entry(MinIntKey(18), 'H'),
             Entry(MinIntKey(29), 'I')
         ], heap.as_list())
 
     def test_change_key(self):
-        heap = Heap[MinIntKey, str](2, [])
+        heap = Heap[MinIntKey, str](3, [])
         heap.push(Entry(MinIntKey(14), 'A'))
         heap.push(Entry(MinIntKey(5), 'B'))
         heap.push(Entry(MinIntKey(7), 'C'))
@@ -114,7 +114,7 @@ class TestBinaryMinHeap(TestCase):
         self.assertEqual(Entry(MinIntKey(4), 'I'), heap.peak())
 
     def test_delete(self):
-        heap = Heap[MinIntKey, str](2, [])
+        heap = Heap[MinIntKey, str](3, [])
         heap.push(Entry(MinIntKey(14), 'A'))
         heap.push(Entry(MinIntKey(5), 'B'))
         heap.push(Entry(MinIntKey(7), 'C'))
@@ -127,17 +127,17 @@ class TestBinaryMinHeap(TestCase):
         del heap[8]
         self.assertEqual([
             Entry(MinIntKey(5), 'B'),
-            Entry(MinIntKey(14), 'A'),
+            Entry(MinIntKey(11), 'G'),
             Entry(MinIntKey(7), 'C'),
             Entry(MinIntKey(18), 'D'),
             Entry(MinIntKey(42), 'E'),
+            Entry(MinIntKey(14), 'A'),
             Entry(MinIntKey(12), 'F'),
-            Entry(MinIntKey(11), 'G'),
             Entry(MinIntKey(18), 'H')
         ], heap.as_list())
 
     def test_is_empty(self):
-        heap = Heap[MinIntKey, str](2, [])
+        heap = Heap[MinIntKey, str](3, [])
         self.assertTrue(heap.is_empty())
         heap.push(Entry(MinIntKey(14), 'A'))
         self.assertFalse(heap.is_empty())

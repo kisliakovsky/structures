@@ -1,17 +1,10 @@
-from abc import ABC, abstractmethod
+from typing import Tuple
 
-from src.priority_queue import PriorityQueue
+from src.binary_heap import Heap, Key, Unit
 from src.queue import LimitedQueue
 
 
-class AbstractPacketProcessor(ABC):
-
-    @abstractmethod
-    def take(self, arrival: int, processing_time: int) -> int:
-        pass
-
-
-class PacketProcessor(AbstractPacketProcessor):
+class PacketProcessor:
     def __init__(self, buffer_size: int):
         self.__buffer: LimitedQueue[int] = LimitedQueue[int](buffer_size)
         self.__previous_arrival: int = 0
@@ -36,15 +29,48 @@ class PacketProcessor(AbstractPacketProcessor):
         return not self.__buffer.is_empty() and self.__buffer.peak() <= arrival
 
 
-class ParallelPacketProcessor(AbstractPacketProcessor):
-    def __init__(self):
-        self.__buffer: PriorityQueue[int] = PriorityQueue[int]()
+class CoreKey(Key['CoreKey']):
+    def __init__(self, i: int, time: int):
+        self.__i = i
+        self.__time = time
 
-    def take(self, arrival: int, processing_time: int) -> int:
-        pass
+    def index(self) -> int:
+        return self.__i
 
-    def __can_be_processed_immediately(self, processing_time) -> bool:
-        return self.__buffer.is_empty() and processing_time == 0
+    def time(self) -> int:
+        return self.__time
 
-    def __exists_already_processed(self, arrival) -> bool:
-        return not self.__buffer.is_empty() and self.__buffer.peak() <= arrival
+    def compare_to(self, other: 'CoreKey') -> int:
+        diff_time = other.__time - self.__time
+        return diff_time if diff_time != 0 else other.__i - self.__i
+
+    def more(self) -> 'CoreKey':
+        return CoreKey(self.__i, self.__time - 1)
+
+    def add_time(self, time: int) -> None:
+        self.__time += time
+
+    def __eq__(self, other):
+        if isinstance(other, CoreKey):
+            return self.__i == other.__i and self.__time == other.__time
+        else:
+            return False
+
+    def __str__(self):
+        return f"{self.__i} {self.__time}"
+
+
+class ParallelPacketProcessor:
+    def __init__(self, n: int):
+
+        self.__cores: Heap[CoreKey, CoreKey] = Heap(
+            max(2, int(round(n ** (1./5)))),
+            [Unit(CoreKey(i, 0)) for i in range(n)]
+        )
+
+    def take(self, processing_time: int) -> Tuple[int, int]:
+        key = self.__cores.peak().key()
+        index, time = key.index(), key.time()
+        key.add_time(processing_time)
+        self.__cores.change_key(0, key)
+        return index, time
