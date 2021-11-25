@@ -1,19 +1,74 @@
-from abc import ABC, abstractmethod
+from abc import ABC, abstractmethod, ABCMeta
 from typing import TypeVar, Generic, List, Optional, Tuple
 
-T = TypeVar('T')
+K = TypeVar('K', bound='Key')
+V = TypeVar('V')
 
 
-class HeapNode(Generic[T]):
-    def __init__(self, key: int, value: T):
+class Key(Generic[K], metaclass=ABCMeta):
+
+    @abstractmethod
+    def compare_to(self, other: K) -> int:
+        pass
+
+    @abstractmethod
+    def more(self) -> K:
+        pass
+
+
+class MinIntKey(Key['MinIntKey']):
+    def __init__(self, x: int):
+        self.__x = x
+
+    def compare_to(self, other: 'MinIntKey') -> int:
+        return other.__x - self.__x
+
+    def more(self) -> 'MinIntKey':
+        return MinIntKey(self.__x - 1)
+
+    def __eq__(self, other):
+        if isinstance(other, MinIntKey):
+            return self.__x == other.__x
+        else:
+            return False
+
+    def __str__(self):
+        return str(self.__x)
+
+
+class MaxIntKey(Key['MaxIntKey']):
+    def __init__(self, x: int):
+        self.__x = x
+
+    def compare_to(self, other: 'MaxIntKey') -> int:
+        return self.__x - other.__x
+
+    def more(self) -> 'MaxIntKey':
+        return MaxIntKey(self.__x + 1)
+
+    def __eq__(self, other):
+        if isinstance(other, MaxIntKey):
+            return self.__x == other.__x
+        else:
+            return False
+
+    def __str__(self):
+        return str(self.__x)
+
+
+class HeapNode(Generic[K, V]):
+    def __init__(self, key: K, value: V):
         self.__key = key
         self.__value = value
 
-    def key(self) -> int:
+    def key(self) -> K:
         return self.__key
 
-    def value(self) -> T:
+    def value(self) -> V:
         return self.__value
+
+    def copy(self, key: K) -> 'HeapNode[K, V]':
+        return HeapNode(key, self.__value)
 
     def __eq__(self, other):
         if isinstance(other, HeapNode):
@@ -25,52 +80,32 @@ class HeapNode(Generic[T]):
         return f"[{self.__key}, {self.__value}]"
 
     @staticmethod
-    def heap_node(key: int, node):
+    def heap_node(key: K, node: 'HeapNode[K, V]'):
         return HeapNode(key, node.value())
 
 
-class HeapNodeComparison(Generic[T], ABC):
-
-    @abstractmethod
-    def perform(self, first_node: HeapNode[T], second_node: HeapNode[T]) -> int:
-        pass
-
-
-class MinHeapNodeComparison(HeapNodeComparison[T]):
-
-    def perform(self, first_node: HeapNode[T], second_node: HeapNode[T]) -> int:
-        return second_node.key() - first_node.key()
-
-
-class MaxHeapNodeComparison(HeapNodeComparison[T]):
-
-    def perform(self, first_node: HeapNode[T], second_node: HeapNode[T]) -> int:
-        return first_node.key() - second_node.key()
-
-
-class BinaryHeap(Generic[T], ABC):
-    def __init__(self, data: List[HeapNode[T]], comparison: HeapNodeComparison[T]):
-        self.__comparison = comparison
+class BinaryHeap(Generic[K, V], ABC):
+    def __init__(self, data: List[HeapNode[K, V]]):
         self.__swap_log: List[Tuple[int, int]] = []
-        self.__data: List[HeapNode[T]] = data
+        self.__data: List[HeapNode[K, V]] = data
         for i in range(len(data) // 2 - 1, -1, -1):
             self.__sift_down(i)
 
-    def push(self, item: HeapNode[T]) -> None:
+    def push(self, item: HeapNode[K, V]) -> None:
         self.__data.append(item)
         self.__sift_up(len(self.__data) - 1)
 
-    def pop(self) -> Optional[HeapNode[T]]:
+    def pop(self) -> Optional[HeapNode[K, V]]:
         return self.__pop()
 
-    def peak(self) -> Optional[HeapNode[T]]:
+    def peak(self) -> Optional[HeapNode[K, V]]:
         return self.__data[0] if self.__data else None
 
-    def change_key(self, i: int, key: int) -> None:
+    def change_key(self, i: int, key: K) -> None:
         if i < len(self.__data):
             item = self.__data[i]
             self.__data[i] = HeapNode.heap_node(key, item)
-            if self.__comparison.perform(self.__data[i], item) > 0:
+            if self.__data[i].key().compare_to(item.key()) > 0:
                 self.__sift_up(i)
             else:
                 self.__sift_down(i)
@@ -79,20 +114,14 @@ class BinaryHeap(Generic[T], ABC):
 
     def __delitem__(self, i: int):
         if i < len(self.__data):
-            if self.__comparison.perform(
-                    HeapNode.heap_node(self.__data[0].key() - 1, self.__data[i]),
-                    HeapNode.heap_node(self.__data[0].key() + 1, self.__data[i])
-            ) > 0:
-                new_node = HeapNode.heap_node(self.__data[0].key() - 1, self.__data[i])
-            else:
-                new_node = HeapNode.heap_node(self.__data[0].key() + 1, self.__data[i])
-            self.__data[i] = new_node
+            root = self.__data[0]
+            self.__data[i] = root.copy(root.key().more())
             self.__sift_up(i)
             self.__pop()
         else:
             raise IndexError("index out of range")
 
-    def as_list(self) -> List[HeapNode[T]]:
+    def as_list(self) -> List[HeapNode[K, V]]:
         return self.__data[:]
 
     def is_empty(self) -> bool:
@@ -101,7 +130,7 @@ class BinaryHeap(Generic[T], ABC):
     def swap_log(self) -> List[Tuple[int, int]]:
         return self.__swap_log[:]
 
-    def __pop(self) -> Optional[HeapNode[T]]:
+    def __pop(self) -> Optional[HeapNode[K, V]]:
         if self.__data:
             result = self.__data[0]
             self.__swap(-1, 0)
@@ -137,10 +166,10 @@ class BinaryHeap(Generic[T], ABC):
                 extreme_i = None
 
     def __should_be_higher_than(self, i: int, j: int) -> bool:
-        return self.__comparison.perform(self.__data[i], self.__data[j]) > 0 if i < len(self.__data) else False
+        return self.__data[i].key().compare_to(self.__data[j].key()) > 0 if i < len(self.__data) else False
 
     def __should_be_lower_than(self, i: int, j: int) -> bool:
-        return self.__comparison.perform(self.__data[i], self.__data[j]) < 0
+        return self.__data[i].key().compare_to(self.__data[j].key()) < 0
 
     @staticmethod
     def __left_child_i(parent_i: int) -> Optional[int]:
@@ -153,13 +182,3 @@ class BinaryHeap(Generic[T], ABC):
     @staticmethod
     def __parent_i(child_i: int) -> int:
         return (child_i - 1) // 2
-
-
-class BinaryMaxHeap(BinaryHeap[T]):
-    def __init__(self, data: List[HeapNode[T]]):
-        super().__init__(data, MaxHeapNodeComparison())
-
-
-class BinaryMinHeap(BinaryHeap[T]):
-    def __init__(self, data: List[HeapNode[T]]):
-        super().__init__(data, MinHeapNodeComparison())

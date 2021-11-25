@@ -1,42 +1,42 @@
 from unittest import TestCase
 
-from src.binary_heap import HeapNode, BinaryMinHeap
+from src.binary_heap import HeapNode, BinaryHeap, MinIntKey
 
 
 class TestBinaryMinHeap(TestCase):
 
     def test_init(self):
-        heap = BinaryMinHeap[str]([
-            HeapNode[str](14, 'A'),
-            HeapNode[str](5, 'B'),
-            HeapNode[str](7, 'C'),
-            HeapNode[str](18, 'D'),
-            HeapNode[str](42, 'E'),
-            HeapNode[str](12, 'F'),
-            HeapNode[str](11, 'G'),
-            HeapNode[str](18, 'H'),
-            HeapNode[str](29, 'I')
+        heap = BinaryHeap[MinIntKey, str]([
+            HeapNode[MinIntKey, str](MinIntKey(14), 'A'),
+            HeapNode[MinIntKey, str](MinIntKey(5), 'B'),
+            HeapNode[MinIntKey, str](MinIntKey(7), 'C'),
+            HeapNode[MinIntKey, str](MinIntKey(18), 'D'),
+            HeapNode[MinIntKey, str](MinIntKey(42), 'E'),
+            HeapNode[MinIntKey, str](MinIntKey(12), 'F'),
+            HeapNode[MinIntKey, str](MinIntKey(11), 'G'),
+            HeapNode[MinIntKey, str](MinIntKey(18), 'H'),
+            HeapNode[MinIntKey, str](MinIntKey(29), 'I')
         ])
         self.assertEqual([
-            HeapNode[str](5, 'B'),
-            HeapNode[str](14, 'A'),
-            HeapNode[str](7, 'C'),
-            HeapNode[str](18, 'D'),
-            HeapNode[str](42, 'E'),
-            HeapNode[str](12, 'F'),
-            HeapNode[str](11, 'G'),
-            HeapNode[str](18, 'H'),
-            HeapNode[str](29, 'I')
+            HeapNode[MinIntKey, str](MinIntKey(5), 'B'),
+            HeapNode[MinIntKey, str](MinIntKey(14), 'A'),
+            HeapNode[MinIntKey, str](MinIntKey(7), 'C'),
+            HeapNode[MinIntKey, str](MinIntKey(18), 'D'),
+            HeapNode[MinIntKey, str](MinIntKey(42), 'E'),
+            HeapNode[MinIntKey, str](MinIntKey(12), 'F'),
+            HeapNode[MinIntKey, str](MinIntKey(11), 'G'),
+            HeapNode[MinIntKey, str](MinIntKey(18), 'H'),
+            HeapNode[MinIntKey, str](MinIntKey(29), 'I')
         ], heap.as_list())
 
     def test_swap_log(self):
-        heap = BinaryMinHeap[int]([
-            HeapNode[int](7, 7),
-            HeapNode[int](6, 6),
-            HeapNode[int](5, 5),
-            HeapNode[int](4, 4),
-            HeapNode[int](3, 3),
-            HeapNode[int](2, 2)
+        heap = BinaryHeap[MinIntKey, str]([
+            HeapNode[MinIntKey, int](MinIntKey(7), 7),
+            HeapNode[MinIntKey, int](MinIntKey(6), 6),
+            HeapNode[MinIntKey, int](MinIntKey(5), 5),
+            HeapNode[MinIntKey, int](MinIntKey(4), 4),
+            HeapNode[MinIntKey, int](MinIntKey(3), 3),
+            HeapNode[MinIntKey, int](MinIntKey(2), 2)
         ])
         self.assertEqual([
             (2, 5),
@@ -46,114 +46,114 @@ class TestBinaryMinHeap(TestCase):
         ], heap.swap_log())
 
     def test_push(self):
-        heap = BinaryMinHeap[str]([])
-        heap.push(HeapNode[str](14, 'A'))
-        heap.push(HeapNode[str](5, 'B'))
-        heap.push(HeapNode[str](7, 'C'))
-        heap.push(HeapNode[str](18, 'D'))
-        heap.push(HeapNode[str](42, 'E'))
-        heap.push(HeapNode[str](12, 'F'))
-        heap.push(HeapNode[str](11, 'G'))
-        heap.push(HeapNode[str](18, 'H'))
-        heap.push(HeapNode[str](29, 'I'))
+        heap = BinaryHeap[MinIntKey, str]([])
+        heap.push(HeapNode[MinIntKey, str](MinIntKey(14), 'A'))
+        heap.push(HeapNode[MinIntKey, str](MinIntKey(5), 'B'))
+        heap.push(HeapNode[MinIntKey, str](MinIntKey(7), 'C'))
+        heap.push(HeapNode[MinIntKey, str](MinIntKey(18), 'D'))
+        heap.push(HeapNode[MinIntKey, str](MinIntKey(42), 'E'))
+        heap.push(HeapNode[MinIntKey, str](MinIntKey(12), 'F'))
+        heap.push(HeapNode[MinIntKey, str](MinIntKey(11), 'G'))
+        heap.push(HeapNode[MinIntKey, str](MinIntKey(18), 'H'))
+        heap.push(HeapNode[MinIntKey, str](MinIntKey(29), 'I'))
         self.assertEqual([
-            HeapNode[str](5, 'B'),
-            HeapNode[str](14, 'A'),
-            HeapNode[str](7, 'C'),
-            HeapNode[str](18, 'D'),
-            HeapNode[str](42, 'E'),
-            HeapNode[str](12, 'F'),
-            HeapNode[str](11, 'G'),
-            HeapNode[str](18, 'H'),
-            HeapNode[str](29, 'I')
+            HeapNode[MinIntKey, str](MinIntKey(5), 'B'),
+            HeapNode[MinIntKey, str](MinIntKey(14), 'A'),
+            HeapNode[MinIntKey, str](MinIntKey(7), 'C'),
+            HeapNode[MinIntKey, str](MinIntKey(18), 'D'),
+            HeapNode[MinIntKey, str](MinIntKey(42), 'E'),
+            HeapNode[MinIntKey, str](MinIntKey(12), 'F'),
+            HeapNode[MinIntKey, str](MinIntKey(11), 'G'),
+            HeapNode[MinIntKey, str](MinIntKey(18), 'H'),
+            HeapNode[MinIntKey, str](MinIntKey(29), 'I')
         ], heap.as_list())
 
     def test_pop(self):
-        heap = BinaryMinHeap[str]([])
-        heap.push(HeapNode[str](14, 'A'))
-        heap.push(HeapNode[str](5, 'B'))
-        heap.push(HeapNode[str](7, 'C'))
-        heap.push(HeapNode[str](18, 'D'))
-        heap.push(HeapNode[str](42, 'E'))
-        heap.push(HeapNode[str](12, 'F'))
-        heap.push(HeapNode[str](11, 'G'))
-        heap.push(HeapNode[str](18, 'H'))
-        heap.push(HeapNode[str](29, 'I'))
-        self.assertEqual(HeapNode[str](5, 'B'), heap.pop())
-        self.assertEqual(HeapNode[str](7, 'C'), heap.pop())
-        self.assertEqual(HeapNode[str](11, 'G'), heap.pop())
-        self.assertEqual(HeapNode[str](12, 'F'), heap.pop())
-        self.assertEqual(HeapNode[str](14, 'A'), heap.pop())
-        self.assertEqual(HeapNode[str](18, 'D'), heap.pop())
-        self.assertEqual(HeapNode[str](18, 'H'), heap.pop())
-        self.assertEqual(HeapNode[str](29, 'I'), heap.pop())
-        self.assertEqual(HeapNode[str](42, 'E'), heap.pop())
+        heap = BinaryHeap[MinIntKey, str]([])
+        heap.push(HeapNode[MinIntKey, str](MinIntKey(14), 'A'))
+        heap.push(HeapNode[MinIntKey, str](MinIntKey(5), 'B'))
+        heap.push(HeapNode[MinIntKey, str](MinIntKey(7), 'C'))
+        heap.push(HeapNode[MinIntKey, str](MinIntKey(18), 'D'))
+        heap.push(HeapNode[MinIntKey, str](MinIntKey(42), 'E'))
+        heap.push(HeapNode[MinIntKey, str](MinIntKey(12), 'F'))
+        heap.push(HeapNode[MinIntKey, str](MinIntKey(11), 'G'))
+        heap.push(HeapNode[MinIntKey, str](MinIntKey(18), 'H'))
+        heap.push(HeapNode[MinIntKey, str](MinIntKey(29), 'I'))
+        self.assertEqual(HeapNode[MinIntKey, str](MinIntKey(5), 'B'), heap.pop())
+        self.assertEqual(HeapNode[MinIntKey, str](MinIntKey(7), 'C'), heap.pop())
+        self.assertEqual(HeapNode[MinIntKey, str](MinIntKey(11), 'G'), heap.pop())
+        self.assertEqual(HeapNode[MinIntKey, str](MinIntKey(12), 'F'), heap.pop())
+        self.assertEqual(HeapNode[MinIntKey, str](MinIntKey(14), 'A'), heap.pop())
+        self.assertEqual(HeapNode[MinIntKey, str](MinIntKey(18), 'D'), heap.pop())
+        self.assertEqual(HeapNode[MinIntKey, str](MinIntKey(18), 'H'), heap.pop())
+        self.assertEqual(HeapNode[MinIntKey, str](MinIntKey(29), 'I'), heap.pop())
+        self.assertEqual(HeapNode[MinIntKey, str](MinIntKey(42), 'E'), heap.pop())
 
     def test_peak(self):
-        heap = BinaryMinHeap[str]([])
-        heap.push(HeapNode[str](14, 'A'))
-        heap.push(HeapNode[str](5, 'B'))
-        heap.push(HeapNode[str](7, 'C'))
-        heap.push(HeapNode[str](18, 'D'))
-        heap.push(HeapNode[str](42, 'E'))
-        heap.push(HeapNode[str](12, 'F'))
-        heap.push(HeapNode[str](11, 'G'))
-        heap.push(HeapNode[str](18, 'H'))
-        heap.push(HeapNode[str](29, 'I'))
-        self.assertEqual(HeapNode[str](5, 'B'), heap.peak())
+        heap = BinaryHeap[MinIntKey, str]([])
+        heap.push(HeapNode[MinIntKey, str](MinIntKey(14), 'A'))
+        heap.push(HeapNode[MinIntKey, str](MinIntKey(5), 'B'))
+        heap.push(HeapNode[MinIntKey, str](MinIntKey(7), 'C'))
+        heap.push(HeapNode[MinIntKey, str](MinIntKey(18), 'D'))
+        heap.push(HeapNode[MinIntKey, str](MinIntKey(42), 'E'))
+        heap.push(HeapNode[MinIntKey, str](MinIntKey(12), 'F'))
+        heap.push(HeapNode[MinIntKey, str](MinIntKey(11), 'G'))
+        heap.push(HeapNode[MinIntKey, str](MinIntKey(18), 'H'))
+        heap.push(HeapNode[MinIntKey, str](MinIntKey(29), 'I'))
+        self.assertEqual(HeapNode[MinIntKey, str](MinIntKey(5), 'B'), heap.peak())
         self.assertEqual([
-            HeapNode[str](5, 'B'),
-            HeapNode[str](14, 'A'),
-            HeapNode[str](7, 'C'),
-            HeapNode[str](18, 'D'),
-            HeapNode[str](42, 'E'),
-            HeapNode[str](12, 'F'),
-            HeapNode[str](11, 'G'),
-            HeapNode[str](18, 'H'),
-            HeapNode[str](29, 'I')
+            HeapNode[MinIntKey, str](MinIntKey(5), 'B'),
+            HeapNode[MinIntKey, str](MinIntKey(14), 'A'),
+            HeapNode[MinIntKey, str](MinIntKey(7), 'C'),
+            HeapNode[MinIntKey, str](MinIntKey(18), 'D'),
+            HeapNode[MinIntKey, str](MinIntKey(42), 'E'),
+            HeapNode[MinIntKey, str](MinIntKey(12), 'F'),
+            HeapNode[MinIntKey, str](MinIntKey(11), 'G'),
+            HeapNode[MinIntKey, str](MinIntKey(18), 'H'),
+            HeapNode[MinIntKey, str](MinIntKey(29), 'I')
         ], heap.as_list())
 
     def test_change_key(self):
-        heap = BinaryMinHeap[str]([])
-        heap.push(HeapNode[str](14, 'A'))
-        heap.push(HeapNode[str](5, 'B'))
-        heap.push(HeapNode[str](7, 'C'))
-        heap.push(HeapNode[str](18, 'D'))
-        heap.push(HeapNode[str](42, 'E'))
-        heap.push(HeapNode[str](12, 'F'))
-        heap.push(HeapNode[str](11, 'G'))
-        heap.push(HeapNode[str](18, 'H'))
-        heap.push(HeapNode[str](29, 'I'))
+        heap = BinaryHeap[MinIntKey, str]([])
+        heap.push(HeapNode[MinIntKey, str](MinIntKey(14), 'A'))
+        heap.push(HeapNode[MinIntKey, str](MinIntKey(5), 'B'))
+        heap.push(HeapNode[MinIntKey, str](MinIntKey(7), 'C'))
+        heap.push(HeapNode[MinIntKey, str](MinIntKey(18), 'D'))
+        heap.push(HeapNode[MinIntKey, str](MinIntKey(42), 'E'))
+        heap.push(HeapNode[MinIntKey, str](MinIntKey(12), 'F'))
+        heap.push(HeapNode[MinIntKey, str](MinIntKey(11), 'G'))
+        heap.push(HeapNode[MinIntKey, str](MinIntKey(18), 'H'))
+        heap.push(HeapNode[MinIntKey, str](MinIntKey(29), 'I'))
         with self.assertRaises(IndexError):
-            heap.change_key(9, 20)
-        heap.change_key(8, 4)
-        self.assertEqual(HeapNode[str](4, 'I'), heap.peak())
+            heap.change_key(9, MinIntKey(20))
+        heap.change_key(8, MinIntKey(4))
+        self.assertEqual(HeapNode[MinIntKey, str](MinIntKey(4), 'I'), heap.peak())
 
     def test_delete(self):
-        heap = BinaryMinHeap[str]([])
-        heap.push(HeapNode[str](14, 'A'))
-        heap.push(HeapNode[str](5, 'B'))
-        heap.push(HeapNode[str](7, 'C'))
-        heap.push(HeapNode[str](18, 'D'))
-        heap.push(HeapNode[str](42, 'E'))
-        heap.push(HeapNode[str](12, 'F'))
-        heap.push(HeapNode[str](11, 'G'))
-        heap.push(HeapNode[str](18, 'H'))
-        heap.push(HeapNode[str](29, 'I'))
+        heap = BinaryHeap[MinIntKey, str]([])
+        heap.push(HeapNode[MinIntKey, str](MinIntKey(14), 'A'))
+        heap.push(HeapNode[MinIntKey, str](MinIntKey(5), 'B'))
+        heap.push(HeapNode[MinIntKey, str](MinIntKey(7), 'C'))
+        heap.push(HeapNode[MinIntKey, str](MinIntKey(18), 'D'))
+        heap.push(HeapNode[MinIntKey, str](MinIntKey(42), 'E'))
+        heap.push(HeapNode[MinIntKey, str](MinIntKey(12), 'F'))
+        heap.push(HeapNode[MinIntKey, str](MinIntKey(11), 'G'))
+        heap.push(HeapNode[MinIntKey, str](MinIntKey(18), 'H'))
+        heap.push(HeapNode[MinIntKey, str](MinIntKey(29), 'I'))
         del heap[8]
         self.assertEqual([
-            HeapNode[str](5, 'B'),
-            HeapNode[str](14, 'A'),
-            HeapNode[str](7, 'C'),
-            HeapNode[str](18, 'D'),
-            HeapNode[str](42, 'E'),
-            HeapNode[str](12, 'F'),
-            HeapNode[str](11, 'G'),
-            HeapNode[str](18, 'H')
+            HeapNode[MinIntKey, str](MinIntKey(5), 'B'),
+            HeapNode[MinIntKey, str](MinIntKey(14), 'A'),
+            HeapNode[MinIntKey, str](MinIntKey(7), 'C'),
+            HeapNode[MinIntKey, str](MinIntKey(18), 'D'),
+            HeapNode[MinIntKey, str](MinIntKey(42), 'E'),
+            HeapNode[MinIntKey, str](MinIntKey(12), 'F'),
+            HeapNode[MinIntKey, str](MinIntKey(11), 'G'),
+            HeapNode[MinIntKey, str](MinIntKey(18), 'H')
         ], heap.as_list())
 
     def test_is_empty(self):
-        heap = BinaryMinHeap[str]([])
+        heap = BinaryHeap[MinIntKey, str]([])
         self.assertTrue(heap.is_empty())
-        heap.push(HeapNode[str](14, 'A'))
+        heap.push(HeapNode[MinIntKey, str](MinIntKey(14), 'A'))
         self.assertFalse(heap.is_empty())
