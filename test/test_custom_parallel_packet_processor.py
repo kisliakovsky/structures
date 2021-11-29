@@ -54,8 +54,3 @@ class TestCustomParallelPacketProcessor(TestCase):
         self.assertEqual((0, 4), packet_processor.take(0))
         self.assertEqual((0, 4), packet_processor.take(2))
         self.assertEqual((1, 5), packet_processor.take(1))
-
-    def test_long(self):
-        packet_processor = CustomParallelPacketProcessor(5)
-        for i in range(100000):
-            packet_processor.take(randint(0, 5))
