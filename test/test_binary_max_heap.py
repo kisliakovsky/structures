@@ -21,12 +21,12 @@ class TestBinaryMaxHeap(TestCase):
             Entry(MaxIntKey(42), 'E'),
             Entry(MaxIntKey(29), 'I'),
             Entry(MaxIntKey(12), 'F'),
-            Entry(MaxIntKey(18), 'H'),
+            Entry(MaxIntKey(18), 'D'),
             Entry(MaxIntKey(5), 'B'),
             Entry(MaxIntKey(7), 'C'),
             Entry(MaxIntKey(11), 'G'),
-            Entry(MaxIntKey(14), 'A'),
-            Entry(MaxIntKey(18), 'D')
+            Entry(MaxIntKey(18), 'H'),
+            Entry(MaxIntKey(14), 'A')
         ], heap.as_list())
 
     def test_push(self):
@@ -65,8 +65,8 @@ class TestBinaryMaxHeap(TestCase):
         heap.push(Entry(MaxIntKey(29), 'I'))
         self.assertEqual(Entry(MaxIntKey(42), 'E'), heap.pop())
         self.assertEqual(Entry(MaxIntKey(29), 'I'), heap.pop())
-        self.assertEqual(Entry(MaxIntKey(18), 'H'), heap.pop())
         self.assertEqual(Entry(MaxIntKey(18), 'D'), heap.pop())
+        self.assertEqual(Entry(MaxIntKey(18), 'H'), heap.pop())
         self.assertEqual(Entry(MaxIntKey(14), 'A'), heap.pop())
         self.assertEqual(Entry(MaxIntKey(12), 'F'), heap.pop())
         self.assertEqual(Entry(MaxIntKey(11), 'G'), heap.pop())

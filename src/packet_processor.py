@@ -1,6 +1,8 @@
-from typing import Tuple
+from abc import ABC, abstractmethod
+from heapq import heappop, heappush
+from typing import Tuple, List
 
-from src.heap import Heap, Key, Unit
+from src.heap import Key, Heap, Unit, FasterMinHeap
 from src.queue import LimitedQueue
 
 
@@ -47,8 +49,8 @@ class CoreKey(Key['CoreKey']):
     def more(self) -> 'CoreKey':
         return CoreKey(self.__i, self.__time - 1)
 
-    def add_time(self, time: int) -> None:
-        self.__time += time
+    def add_time(self, time: int) -> 'CoreKey':
+        return CoreKey(self.__i, self.__time + time)
 
     def __eq__(self, other):
         if isinstance(other, CoreKey):
@@ -60,17 +62,40 @@ class CoreKey(Key['CoreKey']):
         return f"{self.__i} {self.__time}"
 
 
-class ParallelPacketProcessor:
-    def __init__(self, n: int):
+class ParallelPacketProcessor(ABC):
 
-        self.__cores: Heap[CoreKey, CoreKey] = Heap(
-            max(2, int(round(n ** (1./5)))),
-            [Unit(CoreKey(i, 0)) for i in range(n)]
-        )
+    @abstractmethod
+    def take(self, processing_time: int) -> Tuple[int, int]:
+        pass
+
+
+class StandardParallelPacketProcessor(ParallelPacketProcessor):
+    def __init__(self, n: int):
+        self.__cores: List[Tuple[int, int]] = [(0, i) for i in range(n)]
 
     def take(self, processing_time: int) -> Tuple[int, int]:
-        key = self.__cores.peak().key()
-        index, time = key.index(), key.time()
-        key.add_time(processing_time)
-        self.__cores.change_key(0, key)
+        time, index = heappop(self.__cores)
+        new_time = time + processing_time
+        heappush(self.__cores, (new_time, index))
         return index, time
+
+
+class FasterCustomParallelPacketProcessor(ParallelPacketProcessor):
+    def __init__(self, n: int):
+        self.__cores: FasterMinHeap = FasterMinHeap([(0, i) for i in range(n)])
+
+    def take(self, processing_time: int) -> Tuple[int, int]:
+        time, index = self.__cores.peak()
+        new_time = time + processing_time
+        self.__cores.change_key(0, (new_time, index))
+        return index, time
+
+
+class CustomParallelPacketProcessor(ParallelPacketProcessor):
+    def __init__(self, n: int):
+        self.__cores: Heap[CoreKey, CoreKey] = Heap(2, [Unit(CoreKey(i, 0)) for i in range(n)])
+
+    def take(self, processing_time: int) -> Tuple[int, int]:
+        key = self.__cores.pop().key()
+        self.__cores.push(Unit(key.add_time(processing_time)))
+        return key.index(), key.time()
