@@ -59,35 +59,7 @@ class TestDisjointSet(TestCase):
             (1, 0)
         ], disjoint_set.as_list())
 
-    def test_run_1(self):
-        sizes = [1, 1, 1, 1, 1]
-        disjoint_set = DisjointSetWithMaxSum(5)
-        for i, size in enumerate(sizes):
-            disjoint_set.make_set(i, size)
-        disjoint_set.union(2, 4)
-        self.assertEqual(2, disjoint_set.max_sum())
-        disjoint_set.union(1, 3)
-        self.assertEqual(2, disjoint_set.max_sum())
-        disjoint_set.union(0, 3)
-        self.assertEqual(3, disjoint_set.max_sum())
-        disjoint_set.union(4, 3)
-        self.assertEqual(5, disjoint_set.max_sum())
-        disjoint_set.union(4, 2)
-        self.assertEqual(5, disjoint_set.max_sum())
-
-    def test_run_2(self):
-        sizes = [6, 5, 3, 7]
-        disjoint_set = DisjointSetWithMaxSum(4)
-        for i, size in enumerate(sizes):
-            disjoint_set.make_set(i, size)
-        disjoint_set.union(0, 3)
-        self.assertEqual(13, disjoint_set.max_sum())
-        disjoint_set.union(1, 0)
-        self.assertEqual(18, disjoint_set.max_sum())
-        disjoint_set.union(2, 1)
-        self.assertEqual(21, disjoint_set.max_sum())
-
-    def test_run_3(self):
+    def test_max_sum(self):
         sizes = [10, 0, 5, 0, 3, 3]
         disjoint_set = DisjointSetWithMaxSum(6)
         for i, size in enumerate(sizes):
