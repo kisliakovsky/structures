@@ -1,8 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import List, Optional, TypeVar, Generic, Tuple
 
-from src.stack import Stack
-
 V = TypeVar('V')
 
 
@@ -50,21 +48,10 @@ class DisjointSet(AbstractDisjointSet[V]):
         parent = self.__parents[i]
         if parent is None:
             raise ValueError("item does not exist")
-        stack = Stack[int]()
-        stack.push(i)
         if i != parent:
-            stack.push(parent)
-            while not stack.is_empty():
-                i = stack.peak()
-                parent = self.__parents[i]
-                if i != parent:
-                    i = parent
-                    stack.push(i)
-                else:
-                    while not stack.is_empty():
-                        i = stack.pop()
-                        self.__parents[i] = parent
-        return parent
+            parent = self.__find(self.__parents[i])
+            self.__parents[i] = parent
+        return self.__parents[i]
 
     def union(self, i: int, j: int) -> None:
         if i >= self.__n or j >= self.__n:
