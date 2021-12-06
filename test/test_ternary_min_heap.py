@@ -68,8 +68,8 @@ class TestBinaryMinHeap(TestCase):
         self.assertEqual(Entry(MinIntKey(11), 'G'), heap.pop())
         self.assertEqual(Entry(MinIntKey(12), 'F'), heap.pop())
         self.assertEqual(Entry(MinIntKey(14), 'A'), heap.pop())
-        self.assertEqual(Entry(MinIntKey(18), 'D'), heap.pop())
         self.assertEqual(Entry(MinIntKey(18), 'H'), heap.pop())
+        self.assertEqual(Entry(MinIntKey(18), 'D'), heap.pop())
         self.assertEqual(Entry(MinIntKey(29), 'I'), heap.pop())
         self.assertEqual(Entry(MinIntKey(42), 'E'), heap.pop())
 

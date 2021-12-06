@@ -130,7 +130,7 @@ class Heap(Generic[K, V], ABC):
 
     def push(self, item: HeapNode[K, V, N]) -> None:
         self.__data.append(item)
-        self.__sift_up(0, len(self.__data) - 1)
+        self.__sift_up(len(self.__data) - 1)
 
     def pop(self) -> Optional[HeapNode[K, V, N]]:
         return self.__pop()
@@ -143,7 +143,7 @@ class Heap(Generic[K, V], ABC):
             item_key = self.__data[i].key()
             self.__data[i] = self.__data[i].copy(key)
             if self.__data[i].key().compare_to(item_key) > 0:
-                self.__sift_up(0, i)
+                self.__sift_up(i)
             else:
                 self.__sift_down(i)
         else:
@@ -153,7 +153,7 @@ class Heap(Generic[K, V], ABC):
         if i < len(self.__data):
             root = self.__data[0]
             self.__data[i] = root.copy(root.key().more())
-            self.__sift_up(0, i)
+            self.__sift_up(i)
             self.__pop()
         else:
             raise IndexError("index out of range")
@@ -173,32 +173,26 @@ class Heap(Generic[K, V], ABC):
             return result
         return last
 
-    def __sift_up(self, start_i: int, i: int) -> None:
-        item = self.__data[i]
-        while i > start_i:
+    def __sift_up(self, i: int) -> None:
+        while i > 0 and self.__data[self.__parent_i(i)].key().compare_to(self.__data[i].key()) < 0:
             parent_i = self.__parent_i(i)
-            parent = self.__data[parent_i]
-            if item.key().compare_to(parent.key()) > 0:
-                self.__data[i] = parent
-                i = parent_i
-                continue
-            break
-        self.__data[i] = item
+            self.__swap(parent_i, i)
+            i = parent_i
 
     def __sift_down(self, i: int) -> None:
-        size = len(self.__data)
-        start_i = i
-        item = self.__data[i]
-        child_i = self.__first_child_i(i)
-        while child_i < size:
-            for right_i in self.__right_children_i(i):
-                if not (self.__data[child_i].key().compare_to(self.__data[right_i].key()) > 0):
-                    child_i = right_i
-            self.__data[i] = self.__data[child_i]
-            i = child_i
-            child_i = self.__first_child_i(i)
-        self.__data[i] = item
-        self.__sift_up(start_i, i)
+        extreme_i = None
+        while extreme_i != i:
+            extreme_i = i
+            for child_i in self.__children_i(i):
+                if self.__data[child_i].key().compare_to(self.__data[extreme_i].key()) > 0:
+                    extreme_i = child_i
+            if i != extreme_i:
+                self.__swap(i, extreme_i)
+                i = extreme_i
+                extreme_i = None
+
+    def __swap(self, i: int, j: int):
+        self.__data[i], self.__data[j] = self.__data[j], self.__data[i]
 
     def __first_child_i(self, parent_i: int) -> int:
         return self.__number_of_children * parent_i + 1
@@ -207,6 +201,13 @@ class Heap(Generic[K, V], ABC):
         for i in range(1, self.__number_of_children):
             child_i = self.__number_of_children * parent_i + i + 1
             if child_i < len(self.__data):
+                yield child_i
+
+    def __children_i(self, parent_i: int):
+        size = len(self.__data)
+        for i in range(0, self.__number_of_children):
+            child_i = self.__number_of_children * parent_i + i + 1
+            if child_i < size:
                 yield child_i
 
     def __parent_i(self, child_i: int) -> int:
@@ -221,7 +222,7 @@ class FasterMinHeap:
 
     def push(self, item):
         self.__data.append(item)
-        self.__sift_up(0, len(self.__data) - 1)
+        self.__sift_up(len(self.__data) - 1)
 
     def pop(self):
         last = self.__data.pop() if self.__data else None
@@ -240,7 +241,7 @@ class FasterMinHeap:
             item = self.__data[i]
             self.__data[i] = value
             if value < item:
-                self.__sift_up(0, i)
+                self.__sift_up(i)
             else:
                 self.__sift_down(i)
         else:
@@ -252,36 +253,33 @@ class FasterMinHeap:
     def is_empty(self):
         return not self.__data
 
-    def __sift_up(self, start_i, i):
-        item = self.__data[i]
-        while i > start_i:
+    def __sift_up(self, i):
+        while i > 0 and self.__data[self.__parent_i(i)] > self.__data[i]:
             parent_i = self.__parent_i(i)
-            parent = self.__data[parent_i]
-            if item < parent:
-                self.__data[i] = parent
-                i = parent_i
-                continue
-            break
-        self.__data[i] = item
+            self.__swap(parent_i, i)
+            i = parent_i
 
     def __sift_down(self, i):
-        size = len(self.__data)
-        start_i = i
-        item = self.__data[i]
-        child_i = self.__first_child_i(i)
-        while child_i < size:
-            right_i = child_i + 1
-            if right_i < size and self.__data[child_i] >= self.__data[right_i]:
-                child_i = right_i
-            self.__data[i] = self.__data[child_i]
-            i = child_i
-            child_i = self.__first_child_i(i)
-        self.__data[i] = item
-        self.__sift_up(start_i, i)
+        extreme_i = None
+        while extreme_i != i:
+            extreme_i = i
+            for child_i in self.__children_i(i):
+                if self.__data[child_i] < self.__data[extreme_i]:
+                    extreme_i = child_i
+            if i != extreme_i:
+                self.__swap(i, extreme_i)
+                i = extreme_i
+                extreme_i = None
 
-    @staticmethod
-    def __first_child_i(parent_i):
-        return 2 * parent_i + 1
+    def __swap(self, i, j):
+        self.__data[i], self.__data[j] = self.__data[j], self.__data[i]
+
+    def __children_i(self, parent_i):
+        size = len(self.__data)
+        for i in range(0, 2):
+            child_i = 2 * parent_i + i + 1
+            if child_i < size:
+                yield child_i
 
     @staticmethod
     def __parent_i(child_i):
