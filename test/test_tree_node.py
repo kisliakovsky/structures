@@ -46,3 +46,7 @@ class TestTreeNode(TestCase):
         self.assertEqual(3, one.height())
         self.assertEqual(4, six.height())
         self.assertEqual(5, three.height())
+
+    def test_value(self):
+        node = TreeNode[str]('A')
+        self.assertEqual('A', node.value())

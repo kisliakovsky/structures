@@ -16,7 +16,8 @@ class TestStack(TestCase):
         stack = Stack[str]()
         stack.push('A')
         self.assertEqual('A', stack.pop())
-        self.assertEqual(None, stack.pop())
+        with self.assertRaises(IndexError):
+            stack.pop()
         self.assertEqual([], stack.as_list())
 
     def test_peak(self):
@@ -25,7 +26,8 @@ class TestStack(TestCase):
         self.assertEqual('A', stack.peak())
         self.assertEqual(['A'], stack.as_list())
         stack.pop()
-        self.assertEqual(None, stack.peak())
+        with self.assertRaises(IndexError):
+            stack.peak()
 
     def test_is_empty(self):
         stack = Stack[str]()

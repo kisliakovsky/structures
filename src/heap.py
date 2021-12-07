@@ -1,144 +1,136 @@
+"""This module contains implementations of 'heap' data structure"""
+
 from abc import ABC, abstractmethod, ABCMeta
-from typing import TypeVar, Generic, List, Optional, Iterator
+from typing import TypeVar, Generic, List, Iterator
 
-K = TypeVar('K', bound='Key')
-V = TypeVar('V')
-N = TypeVar('N', bound='HeapNode')
+GenericKey = TypeVar('GenericKey', bound='Key')
+Value = TypeVar('Value')
+GenericHeapNode = TypeVar('GenericHeapNode', bound='HeapNode')
 
 
-class Key(Generic[K], metaclass=ABCMeta):
+class Key(Generic[GenericKey], metaclass=ABCMeta):
 
     @abstractmethod
-    def compare_to(self, other: K) -> int:
+    def compare_to(self, other: 'Key') -> int:
         pass
 
     @abstractmethod
-    def more(self) -> K:
+    def more(self) -> GenericKey:
         pass
 
 
 class MinIntKey(Key['MinIntKey']):
-    def __init__(self, x: int):
-        self.__x = x
+    def __init__(self, value: int):
+        self.__value = value
 
     def compare_to(self, other: 'MinIntKey') -> int:
-        return other.__x - self.__x
+        return other.__value - self.__value
 
     def more(self) -> 'MinIntKey':
-        return MinIntKey(self.__x - 1)
+        return MinIntKey(self.__value - 1)
 
-    def __eq__(self, other):
-        if isinstance(other, MinIntKey):
-            return self.__x == other.__x
-        else:
-            return False
+    def __eq__(self, other: 'MinIntKey'):
+        return self.__value == other.__value if isinstance(other, MinIntKey) else False
 
     def __str__(self):
-        return str(self.__x)
+        return str(self.__value)
 
 
 class MaxIntKey(Key['MaxIntKey']):
-    def __init__(self, x: int):
-        self.__x = x
+    def __init__(self, value: int):
+        self.__value = value
 
     def compare_to(self, other: 'MaxIntKey') -> int:
-        return self.__x - other.__x
+        return self.__value - other.__value
 
     def more(self) -> 'MaxIntKey':
-        return MaxIntKey(self.__x + 1)
+        return MaxIntKey(self.__value + 1)
 
-    def __eq__(self, other):
-        if isinstance(other, MaxIntKey):
-            return self.__x == other.__x
-        else:
-            return False
+    def __eq__(self, other: 'MaxIntKey'):
+        return self.__value == other.__value if isinstance(other, MaxIntKey) else False
 
     def __str__(self):
-        return str(self.__x)
+        return str(self.__value)
 
 
-class HeapNode(ABC, Generic[K, V, N]):
+class HeapNode(ABC, Generic[GenericKey, Value, GenericHeapNode]):
 
     @abstractmethod
-    def key(self) -> K:
+    def key(self) -> GenericKey:
         pass
 
     @abstractmethod
-    def value(self) -> V:
+    def value(self) -> Value:
         pass
 
     @abstractmethod
-    def copy(self, key: K) -> N:
+    def copy(self, key: GenericKey) -> GenericHeapNode:
         pass
 
 
-class Entry(HeapNode[K, V, 'Entry']):
-    def __init__(self, key: K, value: V):
+class Entry(HeapNode[GenericKey, Value, 'Entry']):
+    def __init__(self, key: GenericKey, value: Value):
         self.__key = key
         self.__value = value
 
-    def key(self) -> K:
+    def key(self) -> GenericKey:
         return self.__key
 
-    def value(self) -> V:
+    def value(self) -> Value:
         return self.__value
 
-    def copy(self, key: K) -> N:
+    def copy(self, key: GenericKey) -> GenericHeapNode:
         return Entry(key, self.__value)
 
     def __eq__(self, other: 'Entry'):
         if isinstance(other, Entry):
             return self.__key == other.__key and self.__value == other.__value
-        else:
-            return False
+        return False
 
     def __str__(self):
         return f"[{self.__key}, {self.__value}]"
 
 
-class Unit(HeapNode[K, K, 'Unit']):
-    def __init__(self, key: K):
+class Unit(HeapNode[GenericKey, GenericKey, 'Unit']):
+    def __init__(self, key: GenericKey):
         self.__key = key
 
-    def key(self) -> K:
+    def key(self) -> GenericKey:
         return self.__key
 
-    def value(self) -> K:
+    def value(self) -> GenericKey:
         return self.__key
 
-    def copy(self, key: K) -> N:
+    def copy(self, key: GenericKey) -> GenericHeapNode:
         return Unit(self.__key)
 
     def __eq__(self, other: 'Unit'):
-        if isinstance(other, Unit):
-            return self.__key == other.__key
-        else:
-            return False
+        return self.__key == other.__key if isinstance(other, Unit) else False
 
     def __str__(self):
         return str({self.__key})
 
 
-class Heap(Generic[K, V], ABC):
-    def __init__(self, number_of_children, data: List[HeapNode[K, V, N]]):
-        if number_of_children < 2:
+class Heap(Generic[GenericKey, Value], ABC):
+    def __init__(self, num_of_children, data: List[HeapNode[GenericKey, Value, GenericHeapNode]]):
+        if num_of_children < 2:
             raise ValueError("Number of children must be greater than 1")
-        self.__number_of_children = number_of_children
-        self.__data: List[HeapNode[K, V, N]] = data
+        self.__number_of_children = num_of_children
+        self.__data: List[HeapNode[GenericKey, Value, GenericHeapNode]] = data
         for i in range(len(data) // self.__number_of_children - 1, -1, -1):
             self.__sift_down(i)
 
-    def push(self, item: HeapNode[K, V, N]) -> None:
+    def push(self, item: HeapNode[GenericKey, Value, GenericHeapNode]) -> None:
         self.__data.append(item)
         self.__sift_up(len(self.__data) - 1)
 
-    def pop(self) -> Optional[HeapNode[K, V, N]]:
+    def pop(self) -> HeapNode[GenericKey, Value, GenericHeapNode]:
         return self.__pop()
 
-    def peak(self) -> Optional[HeapNode[K, V, N]]:
-        return self.__data[0] if self.__data else None
+    def peak(self) -> HeapNode[GenericKey, Value, GenericHeapNode]:
+        return self.__data[0]
 
-    def change_key(self, i: int, key: K) -> None:
+    def change_key(self, i: int, key: GenericKey) -> None:
         if i < len(self.__data):
             item_key = self.__data[i].key()
             self.__data[i] = self.__data[i].copy(key)
@@ -158,13 +150,13 @@ class Heap(Generic[K, V], ABC):
         else:
             raise IndexError("index out of range")
 
-    def as_list(self) -> List[HeapNode[K, V, N]]:
+    def as_list(self) -> List[HeapNode[GenericKey, Value, GenericHeapNode]]:
         return self.__data[:]
 
     def is_empty(self) -> bool:
         return not self.__data
 
-    def __pop(self) -> Optional[HeapNode[K, V, N]]:
+    def __pop(self) -> HeapNode[GenericKey, Value, GenericHeapNode]:
         last = self.__data.pop()
         if self.__data:
             result = self.__data[0]
@@ -174,7 +166,7 @@ class Heap(Generic[K, V], ABC):
         return last
 
     def __sift_up(self, i: int) -> None:
-        while i > 0 and self.__data[self.__parent_i(i)].key().compare_to(self.__data[i].key()) < 0:
+        while self.__data[self.__parent_i(i)].key().compare_to(self.__data[i].key()) < 0 < i:
             parent_i = self.__parent_i(i)
             self.__swap(parent_i, i)
             i = parent_i
@@ -191,19 +183,10 @@ class Heap(Generic[K, V], ABC):
                 i = extreme_i
                 extreme_i = None
 
-    def __swap(self, i: int, j: int):
+    def __swap(self, i: int, j: int) -> None:
         self.__data[i], self.__data[j] = self.__data[j], self.__data[i]
 
-    def __first_child_i(self, parent_i: int) -> int:
-        return self.__number_of_children * parent_i + 1
-
-    def __right_children_i(self, parent_i: int) -> Iterator[int]:
-        for i in range(1, self.__number_of_children):
-            child_i = self.__number_of_children * parent_i + i + 1
-            if child_i < len(self.__data):
-                yield child_i
-
-    def __children_i(self, parent_i: int):
+    def __children_i(self, parent_i: int) -> Iterator[int]:
         size = len(self.__data)
         for i in range(0, self.__number_of_children):
             child_i = self.__number_of_children * parent_i + i + 1

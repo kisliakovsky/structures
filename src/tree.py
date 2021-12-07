@@ -1,9 +1,11 @@
+"""This module contains implementations of 'tree' data structure"""
+
 from abc import ABC, abstractmethod
 from typing import TypeVar, Generic, List, Optional
 
 from src.stack import Stack
 
-T = TypeVar('T')
+Value = TypeVar('Value')
 
 
 class TreeHeight(ABC):
@@ -13,11 +15,11 @@ class TreeHeight(ABC):
         pass
 
 
-class TreeNode(TreeHeight, Generic[T]):
-    def __init__(self, data: T):
-        self.__data: T = data
-        self.__parent: Optional[TreeNode[T]] = None
-        self.__children: List[TreeNode[T]] = []
+class TreeNode(TreeHeight, Generic[Value]):
+    def __init__(self, value: Value):
+        self.__value: Value = value
+        self.__parent: Optional[TreeNode[Value]] = None
+        self.__children: List[TreeNode[Value]] = []
 
     def is_root(self) -> bool:
         return self.__parent is None
@@ -25,12 +27,15 @@ class TreeNode(TreeHeight, Generic[T]):
     def is_leaf(self) -> bool:
         return not self.__children
 
-    def set_parent(self, parent) -> None:
+    def set_parent(self, parent: 'TreeNode[Value]') -> None:
         self.__parent = parent
         parent.__children.append(self)
 
     def height(self) -> int:
         return max(map(lambda node: node.height() + 1, self.__children)) if self.__children else 1
+
+    def value(self):
+        return self.__value
 
 
 class ParentsTree(TreeHeight):
@@ -48,14 +53,12 @@ class ParentsTree(TreeHeight):
             new_height = 1
             self.__heights[child] = new_height
             return new_height
-        else:
-            height = self.__heights[child]
-            if height != 0:
-                return height
-            else:
-                new_height = 1 + self.__calculate_height(parent, self.__parents[parent])
-                self.__heights[child] = new_height
-                return new_height
+        height = self.__heights[child]
+        if height != 0:
+            return height
+        new_height = 1 + self.__calculate_height(parent, self.__parents[parent])
+        self.__heights[child] = new_height
+        return new_height
 
 
 class ChildrenTree(TreeHeight):
@@ -70,7 +73,7 @@ class ChildrenTree(TreeHeight):
         self.__heights[self.__root] = 1
         stack = Stack[int]()
         stack.push(self.__root)
-        while len(stack) != 0:
+        while not stack.is_empty():
             parent = stack.pop()
             for child in self.__children_by_parents[parent]:
                 self.__heights[child] = self.__heights[parent] + 1
@@ -86,7 +89,6 @@ class ChildrenTree(TreeHeight):
                 children_by_parents[parent].append(child)
             else:
                 root = child
-        if root is not None:
-            return ChildrenTree(root, children_by_parents)
-        else:
+        if root is None:
             raise ValueError("Root must be specified")
+        return ChildrenTree(root, children_by_parents)

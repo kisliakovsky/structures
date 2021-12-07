@@ -19,7 +19,8 @@ class TestQueue(TestCase):
         queue.enqueue('B')
         self.assertEqual('A', queue.dequeue())
         self.assertEqual('B', queue.dequeue())
-        self.assertEqual(None, queue.dequeue())
+        with self.assertRaises(IndexError):
+            queue.dequeue()
         self.assertEqual([], queue.as_list())
 
     def test_peak(self):
@@ -30,7 +31,8 @@ class TestQueue(TestCase):
         self.assertEqual(['B', 'A'], queue.as_list())
         queue.dequeue()
         queue.dequeue()
-        self.assertEqual(None, queue.peak())
+        with self.assertRaises(IndexError):
+            queue.peak()
 
     def test_is_empty(self):
         queue = Queue[str]()

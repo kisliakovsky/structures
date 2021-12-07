@@ -1,21 +1,23 @@
+"""This module contains implementations of 'stack' data structure"""
+
 from abc import ABC, abstractmethod
 from typing import List, TypeVar, Generic, Optional
 
-T = TypeVar('T')
+Item = TypeVar('Item')
 
 
-class AbstractStack(ABC, Generic[T]):
+class AbstractStack(ABC, Generic[Item]):
 
     @abstractmethod
-    def push(self, item: T) -> None:
+    def push(self, item: Item) -> None:
         pass
 
     @abstractmethod
-    def pop(self) -> Optional[T]:
+    def pop(self) -> Item:
         pass
 
     @abstractmethod
-    def peak(self) -> Optional[T]:
+    def peak(self) -> Item:
         pass
 
     @abstractmethod
@@ -23,27 +25,27 @@ class AbstractStack(ABC, Generic[T]):
         pass
 
     @abstractmethod
-    def as_list(self) -> List[T]:
+    def as_list(self) -> List[Item]:
         pass
 
 
-class Stack(AbstractStack[T]):
+class Stack(AbstractStack[Item]):
     def __init__(self) -> None:
-        self.__data: List[T] = []
+        self.__data: List[Item] = []
 
-    def push(self, item: T) -> None:
+    def push(self, item: Item) -> None:
         self.__data.append(item)
 
-    def peak(self) -> Optional[T]:
-        return self.__data[-1] if self.__data else None
+    def peak(self) -> Item:
+        return self.__data[-1]
 
-    def pop(self) -> Optional[T]:
-        return self.__data.pop() if self.__data else None
+    def pop(self) -> Item:
+        return self.__data.pop()
 
     def is_empty(self) -> bool:
         return not self.__data
 
-    def as_list(self) -> List[T]:
+    def as_list(self) -> List[Item]:
         return self.__data[:]
 
     def __len__(self):
@@ -67,11 +69,11 @@ class StackWithMaxValue(AbstractStack[int]):
             else:
                 self.__maximums.push(maximum)
 
-    def pop(self) -> Optional[int]:
+    def pop(self) -> int:
         self.__maximums.pop()
         return self.__stack.pop()
 
-    def peak(self) -> Optional[int]:
+    def peak(self) -> int:
         return self.__stack.peak()
 
     def maximum(self) -> Optional[int]:
@@ -80,5 +82,5 @@ class StackWithMaxValue(AbstractStack[int]):
     def is_empty(self) -> bool:
         return self.__stack.is_empty()
 
-    def as_list(self) -> List[T]:
+    def as_list(self) -> List[Item]:
         return self.__stack.as_list()

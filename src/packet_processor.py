@@ -1,3 +1,5 @@
+"""This module contains application examples of 'queue' and 'heap' data structures"""
+
 from abc import ABC, abstractmethod
 from heapq import heappop, heappush
 from typing import Tuple, List
@@ -55,8 +57,7 @@ class CoreKey(Key['CoreKey']):
     def __eq__(self, other):
         if isinstance(other, CoreKey):
             return self.__i == other.__i and self.__time == other.__time
-        else:
-            return False
+        return False
 
     def __str__(self):
         return f"{self.__i} {self.__time}"
@@ -70,8 +71,8 @@ class ParallelPacketProcessor(ABC):
 
 
 class StandardParallelPacketProcessor(ParallelPacketProcessor):
-    def __init__(self, n: int):
-        self.__cores: List[Tuple[int, int]] = [(0, i) for i in range(n)]
+    def __init__(self, number_of_cores: int):
+        self.__cores: List[Tuple[int, int]] = [(0, i) for i in range(number_of_cores)]
 
     def take(self, processing_time: int) -> Tuple[int, int]:
         time, index = heappop(self.__cores)
@@ -81,8 +82,8 @@ class StandardParallelPacketProcessor(ParallelPacketProcessor):
 
 
 class FasterCustomParallelPacketProcessor(ParallelPacketProcessor):
-    def __init__(self, n: int):
-        self.__cores: FasterMinHeap = FasterMinHeap([(0, i) for i in range(n)])
+    def __init__(self, number_of_cores: int):
+        self.__cores: FasterMinHeap = FasterMinHeap([(0, i) for i in range(number_of_cores)])
 
     def take(self, processing_time: int) -> Tuple[int, int]:
         time, index = self.__cores.peak()
@@ -92,8 +93,9 @@ class FasterCustomParallelPacketProcessor(ParallelPacketProcessor):
 
 
 class CustomParallelPacketProcessor(ParallelPacketProcessor):
-    def __init__(self, n: int):
-        self.__cores: Heap[CoreKey, CoreKey] = Heap(2, [Unit(CoreKey(i, 0)) for i in range(n)])
+    def __init__(self, number_of_cores: int):
+        core_key_heap = Heap[CoreKey, CoreKey]
+        self.__cores: core_key_heap = Heap(2, [Unit(CoreKey(i, 0)) for i in range(number_of_cores)])
 
     def take(self, processing_time: int) -> Tuple[int, int]:
         key = self.__cores.pop().key()

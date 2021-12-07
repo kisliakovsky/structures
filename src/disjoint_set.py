@@ -1,13 +1,15 @@
+"""This module contains implementations of 'disjoint set' data structure"""
+
 from abc import ABC, abstractmethod
 from typing import List, Optional, TypeVar, Generic, Tuple
 
-V = TypeVar('V')
+Value = TypeVar('Value')
 
 
-class AbstractDisjointSet(ABC, Generic[V]):
+class AbstractDisjointSet(ABC, Generic[Value]):
 
     @abstractmethod
-    def make_set(self, i: int, value: V) -> None:
+    def make_set(self, i: int, value: Value) -> None:
         pass
 
     @abstractmethod
@@ -19,19 +21,19 @@ class AbstractDisjointSet(ABC, Generic[V]):
         pass
 
     @abstractmethod
-    def as_list(self) -> List[Tuple[int, V]]:
+    def as_list(self) -> List[Tuple[int, Value]]:
         pass
 
 
-class DisjointSet(AbstractDisjointSet[V]):
-    def __init__(self, n: int):
-        self.__n = n
-        self.__parents: List[Optional[int]] = [None for _ in range(n)]
-        self.__ranks: List[Optional[int]] = [None for _ in range(n)]
-        self.__values: List[Optional[V]] = [None for _ in range(n)]
+class DisjointSet(AbstractDisjointSet[Value]):
+    def __init__(self, size: int):
+        self.__size = size
+        self.__parents: List[Optional[int]] = [None for _ in range(size)]
+        self.__ranks: List[Optional[int]] = [None for _ in range(size)]
+        self.__values: List[Optional[Value]] = [None for _ in range(size)]
 
-    def make_set(self, i: int, value: V) -> None:
-        if i >= self.__n:
+    def make_set(self, i: int, value: Value) -> None:
+        if i >= self.__size:
             raise IndexError("index out of range")
         if self.__parents[i] is not None:
             raise ValueError("set already made")
@@ -40,7 +42,7 @@ class DisjointSet(AbstractDisjointSet[V]):
         self.__ranks[i] = 1
 
     def find(self, i: int) -> int:
-        if i >= self.__n:
+        if i >= self.__size:
             raise IndexError("index out of range")
         return self.__find(i)
 
@@ -54,7 +56,7 @@ class DisjointSet(AbstractDisjointSet[V]):
         return self.__parents[i]
 
     def union(self, i: int, j: int) -> None:
-        if i >= self.__n or j >= self.__n:
+        if i >= self.__size or j >= self.__size:
             raise IndexError("index out of range")
         i_root = self.__find(i)
         j_root = self.__find(j)
@@ -69,20 +71,20 @@ class DisjointSet(AbstractDisjointSet[V]):
             if i_rank == j_rank:
                 self.__ranks[j_root] += 1
 
-    def as_list(self) -> List[Tuple[int, V]]:
+    def as_list(self) -> List[Tuple[int, Value]]:
         return self.__as_list()
 
-    def __as_list(self) -> List[Tuple[int, V]]:
-        return [(self.__values[i], self.__find(i)) for i in range(self.__n)]
+    def __as_list(self) -> List[Tuple[int, Value]]:
+        return [(self.__values[i], self.__find(i)) for i in range(self.__size)]
 
     def __str__(self):
         return str(self.__as_list())
 
 
 class DisjointSetWithMaxSum(AbstractDisjointSet[int]):
-    def __init__(self, n: int):
-        self.__disjoint_set: DisjointSet[int] = DisjointSet[int](n)
-        self.__values: List[Optional[int]] = [None for _ in range(n)]
+    def __init__(self, size: int):
+        self.__disjoint_set: DisjointSet[int] = DisjointSet[int](size)
+        self.__values: List[Optional[int]] = [None for _ in range(size)]
         self.__max_root: Optional[int] = None
 
     def make_set(self, i: int, value: int) -> None:

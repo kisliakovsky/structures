@@ -18,7 +18,8 @@ class TestQueueWithMaxValue(TestCase):
         queue.enqueue(2)
         self.assertEqual(1, queue.dequeue())
         self.assertEqual(2, queue.dequeue())
-        self.assertEqual(None, queue.dequeue())
+        with self.assertRaises(IndexError):
+            queue.dequeue()
         self.assertEqual([], queue.as_list())
 
     def test_peak(self):
@@ -29,7 +30,8 @@ class TestQueueWithMaxValue(TestCase):
         self.assertEqual([2, 1], queue.as_list())
         queue.dequeue()
         queue.dequeue()
-        self.assertEqual(None, queue.peak())
+        with self.assertRaises(IndexError):
+            queue.peak()
 
     def test_is_empty(self):
         queue = QueueWithMaxValue()
