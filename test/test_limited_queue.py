@@ -39,16 +39,16 @@ class TestLimitedQueue(TestCase):
             queue.dequeue()
         self.assertEqual([], queue.as_list())
 
-    def test_peak(self):
+    def test_peek(self):
         queue = LimitedQueue[str](3)
         queue.enqueue('A')
         queue.enqueue('B')
-        self.assertEqual('A', queue.peak())
+        self.assertEqual('A', queue.peek())
         self.assertEqual(['B', 'A'], queue.as_list())
         queue.dequeue()
         queue.dequeue()
         with self.assertRaises(IndexError):
-            queue.peak()
+            queue.peek()
 
     def test_is_empty(self):
         queue = LimitedQueue[str](3)

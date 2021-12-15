@@ -8,7 +8,7 @@ Item = TypeVar('Item')
 class ArrayList(Generic[Item]):
     def __init__(self, size: int, realloc_coeff: int, potential_formula: Callable[[int, int], int]):
         if size < 0:
-            raise ValueError("n must be positive")
+            raise ValueError('n must be positive')
         self.__initial_size = size
         self.__realloc_coeff = realloc_coeff
         self.__index = -1
@@ -39,5 +39,5 @@ class ArrayList(Generic[Item]):
         self.__data[self.__index] = item
         return self.__append_actual_cost + delta_n + (self.__potential() - potential_before)
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self.__data)

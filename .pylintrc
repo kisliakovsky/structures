@@ -285,7 +285,7 @@ indent-after-paren=4
 indent-string='    '
 
 # Maximum number of characters on a single line.
-max-line-length=100
+max-line-length=120
 
 # Maximum number of lines in a module.
 max-module-lines=1000
@@ -515,7 +515,9 @@ exclude-protected=_asdict,
                   __key,
                   __value,
                   __i,
-                  __time
+                  __time,
+                  __data,
+                  __number_of_buckets
 
 # List of valid names for the first argument in a class method.
 valid-classmethod-first-arg=cls

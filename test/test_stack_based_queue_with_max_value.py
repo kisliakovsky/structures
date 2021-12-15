@@ -22,16 +22,16 @@ class TestStackBasedQueueWithMaxValue(TestCase):
             queue.dequeue()
         self.assertEqual([], queue.as_list())
 
-    def test_peak(self):
+    def test_peek(self):
         queue = StackBasedQueueWithMaxValue()
         queue.enqueue(1)
         queue.enqueue(2)
-        self.assertEqual(1, queue.peak())
+        self.assertEqual(1, queue.peek())
         self.assertEqual([2, 1], queue.as_list())
         queue.dequeue()
         queue.dequeue()
         with self.assertRaises(IndexError):
-            queue.peak()
+            queue.peek()
 
     def test_is_empty(self):
         queue = StackBasedQueueWithMaxValue()

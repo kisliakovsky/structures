@@ -11,7 +11,7 @@ GenericHeapNode = TypeVar('GenericHeapNode', bound='HeapNode')
 class Key(Generic[GenericKey], metaclass=ABCMeta):
 
     @abstractmethod
-    def compare_to(self, other: 'Key') -> int:
+    def compare_to(self, other: GenericKey) -> int:
         pass
 
     @abstractmethod
@@ -29,10 +29,10 @@ class MinIntKey(Key['MinIntKey']):
     def more(self) -> 'MinIntKey':
         return MinIntKey(self.__value - 1)
 
-    def __eq__(self, other: 'MinIntKey'):
+    def __eq__(self, other: 'MinIntKey') -> bool:
         return self.__value == other.__value if isinstance(other, MinIntKey) else False
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self.__value)
 
 
@@ -46,10 +46,10 @@ class MaxIntKey(Key['MaxIntKey']):
     def more(self) -> 'MaxIntKey':
         return MaxIntKey(self.__value + 1)
 
-    def __eq__(self, other: 'MaxIntKey'):
+    def __eq__(self, other: 'MaxIntKey') -> bool:
         return self.__value == other.__value if isinstance(other, MaxIntKey) else False
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self.__value)
 
 
@@ -82,13 +82,13 @@ class Entry(HeapNode[GenericKey, Value, 'Entry']):
     def copy(self, key: GenericKey) -> GenericHeapNode:
         return Entry(key, self.__value)
 
-    def __eq__(self, other: 'Entry'):
+    def __eq__(self, other: 'Entry') -> bool:
         if isinstance(other, Entry):
             return self.__key == other.__key and self.__value == other.__value
         return False
 
-    def __str__(self):
-        return f"[{self.__key}, {self.__value}]"
+    def __str__(self) -> str:
+        return f'[{self.__key}, {self.__value}]'
 
 
 class Unit(HeapNode[GenericKey, GenericKey, 'Unit']):
@@ -104,17 +104,17 @@ class Unit(HeapNode[GenericKey, GenericKey, 'Unit']):
     def copy(self, key: GenericKey) -> GenericHeapNode:
         return Unit(self.__key)
 
-    def __eq__(self, other: 'Unit'):
+    def __eq__(self, other: 'Unit') -> bool:
         return self.__key == other.__key if isinstance(other, Unit) else False
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str({self.__key})
 
 
 class Heap(Generic[GenericKey, Value], ABC):
     def __init__(self, num_of_children, data: List[HeapNode[GenericKey, Value, GenericHeapNode]]):
         if num_of_children < 2:
-            raise ValueError("Number of children must be greater than 1")
+            raise ValueError('Number of children must be greater than 1')
         self.__number_of_children = num_of_children
         self.__data: List[HeapNode[GenericKey, Value, GenericHeapNode]] = data
         for i in range(len(data) // self.__number_of_children - 1, -1, -1):
@@ -127,7 +127,7 @@ class Heap(Generic[GenericKey, Value], ABC):
     def pop(self) -> HeapNode[GenericKey, Value, GenericHeapNode]:
         return self.__pop()
 
-    def peak(self) -> HeapNode[GenericKey, Value, GenericHeapNode]:
+    def peek(self) -> HeapNode[GenericKey, Value, GenericHeapNode]:
         return self.__data[0]
 
     def change_key(self, i: int, key: GenericKey) -> None:
@@ -139,16 +139,16 @@ class Heap(Generic[GenericKey, Value], ABC):
             else:
                 self.__sift_down(i)
         else:
-            raise IndexError("index out of range")
+            raise IndexError('index out of range')
 
-    def __delitem__(self, i: int):
+    def __delitem__(self, i: int) -> None:
         if i < len(self.__data):
             root = self.__data[0]
             self.__data[i] = root.copy(root.key().more())
             self.__sift_up(i)
             self.__pop()
         else:
-            raise IndexError("index out of range")
+            raise IndexError('index out of range')
 
     def as_list(self) -> List[HeapNode[GenericKey, Value, GenericHeapNode]]:
         return self.__data[:]
@@ -216,7 +216,7 @@ class FasterMinHeap:
             return result
         return last
 
-    def peak(self):
+    def peek(self):
         return self.__data[0] if self.__data else None
 
     def change_key(self, i, value):
@@ -228,7 +228,7 @@ class FasterMinHeap:
             else:
                 self.__sift_down(i)
         else:
-            raise IndexError("index out of range")
+            raise IndexError('index out of range')
 
     def as_list(self):
         return self.__data[:]

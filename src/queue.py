@@ -19,7 +19,7 @@ class AbstractQueue(ABC, Generic[Item]):
         pass
 
     @abstractmethod
-    def peak(self) -> Item:
+    def peek(self) -> Item:
         pass
 
     @abstractmethod
@@ -39,8 +39,8 @@ class AbstractQueueWithMaxValue(AbstractQueue[int]):
 
 
 class Queue(AbstractQueue[Item]):
-    def __init__(self) -> None:
-        self.__data: List[Item] = []
+    def __init__(self, data: List[Item]) -> None:
+        self.__data: List[Item] = data
 
     def enqueue(self, item: Item) -> None:
         self.__data.append(item)
@@ -50,7 +50,7 @@ class Queue(AbstractQueue[Item]):
         del self.__data[0]
         return item
 
-    def peak(self) -> Item:
+    def peek(self) -> Item:
         return self.__data[0]
 
     def is_empty(self) -> bool:
@@ -64,6 +64,9 @@ class Queue(AbstractQueue[Item]):
     def __len__(self) -> int:
         return len(self.__data)
 
+    def __eq__(self, other: 'Queue'):
+        return self.__data == other.__data if isinstance(other, Queue) else False
+
 
 class FullQueueError(Exception):
     pass
@@ -72,7 +75,7 @@ class FullQueueError(Exception):
 class LimitedQueue(AbstractQueue[Item]):
 
     def __init__(self, max_len: int):
-        self.__queue = Queue[Item]()
+        self.__queue = Queue[Item]([])
         self.__max_len = max_len
 
     def enqueue(self, item: Item) -> None:
@@ -87,8 +90,8 @@ class LimitedQueue(AbstractQueue[Item]):
     def dequeue(self) -> Item:
         return self.__queue.dequeue()
 
-    def peak(self) -> Item:
-        return self.__queue.peak()
+    def peek(self) -> Item:
+        return self.__queue.peek()
 
     def is_empty(self) -> bool:
         return self.__queue.is_empty()
@@ -99,13 +102,13 @@ class LimitedQueue(AbstractQueue[Item]):
 
 class QueueWithMaxValue(AbstractQueueWithMaxValue):
     def __init__(self):
-        self.__queue: Queue[int] = Queue[int]()
+        self.__queue: Queue[int] = Queue[int]([])
         self.__prev_item: Optional[int] = None
-        self.__maximums: Queue[int] = Queue[int]()
+        self.__maximums: Queue[int] = Queue[int]([])
 
     def enqueue(self, item: int) -> None:
         if self.__prev_item is not None and self.__prev_item < item:
-            maximums = Queue[int]()
+            maximums = Queue[int]([])
             while not self.__maximums.is_empty():
                 maximum = self.__maximums.dequeue()
                 if maximum >= item:
@@ -117,15 +120,15 @@ class QueueWithMaxValue(AbstractQueueWithMaxValue):
 
     def dequeue(self) -> int:
         item = self.__queue.dequeue()
-        if item == self.__maximums.peak():
+        if item == self.__maximums.peek():
             self.__maximums.dequeue()
         return item
 
     def maximum(self) -> Optional[int]:
-        return self.__maximums.peak()
+        return self.__maximums.peek()
 
-    def peak(self) -> Item:
-        return self.__queue.peak()
+    def peek(self) -> Item:
+        return self.__queue.peek()
 
     def is_empty(self) -> bool:
         return self.__queue.is_empty()
@@ -152,12 +155,12 @@ class StackBasedQueueWithMaxValue(AbstractQueueWithMaxValue):
             self.__enqueue_stack_max = None
         return self.__dequeue_stack.pop()
 
-    def peak(self) -> Item:
+    def peek(self) -> Item:
         if self.__dequeue_stack.is_empty():
             while not self.__enqueue_stack.is_empty():
                 self.__dequeue_stack.push(self.__enqueue_stack.pop())
             self.__enqueue_stack_max = None
-        return self.__dequeue_stack.peak()
+        return self.__dequeue_stack.peek()
 
     def maximum(self) -> Optional[int]:
         if self.__enqueue_stack.is_empty():

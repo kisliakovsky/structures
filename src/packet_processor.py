@@ -30,7 +30,7 @@ class PacketProcessor:
         return self.__buffer.is_empty() and processing_time == 0
 
     def __exists_already_processed(self, arrival: int) -> bool:
-        return not self.__buffer.is_empty() and self.__buffer.peak() <= arrival
+        return not self.__buffer.is_empty() and self.__buffer.peek() <= arrival
 
 
 class CoreKey(Key['CoreKey']):
@@ -60,7 +60,7 @@ class CoreKey(Key['CoreKey']):
         return False
 
     def __str__(self):
-        return f"{self.__i} {self.__time}"
+        return f'{self.__i} {self.__time}'
 
 
 class ParallelPacketProcessor(ABC):
@@ -86,7 +86,7 @@ class FasterCustomParallelPacketProcessor(ParallelPacketProcessor):
         self.__cores: FasterMinHeap = FasterMinHeap([(0, i) for i in range(number_of_cores)])
 
     def take(self, processing_time: int) -> Tuple[int, int]:
-        time, index = self.__cores.peak()
+        time, index = self.__cores.peek()
         new_time = time + processing_time
         self.__cores.change_key(0, (new_time, index))
         return index, time

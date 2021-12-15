@@ -73,7 +73,7 @@ class TestBinaryMinHeap(TestCase):
         self.assertEqual(Entry(MinIntKey(29), 'I'), heap.pop())
         self.assertEqual(Entry(MinIntKey(42), 'E'), heap.pop())
 
-    def test_peak(self):
+    def test_peek(self):
         heap = Heap[MinIntKey, str](2, [])
         heap.push(Entry(MinIntKey(14), 'A'))
         heap.push(Entry(MinIntKey(5), 'B'))
@@ -84,7 +84,7 @@ class TestBinaryMinHeap(TestCase):
         heap.push(Entry(MinIntKey(11), 'G'))
         heap.push(Entry(MinIntKey(18), 'H'))
         heap.push(Entry(MinIntKey(29), 'I'))
-        self.assertEqual(Entry(MinIntKey(5), 'B'), heap.peak())
+        self.assertEqual(Entry(MinIntKey(5), 'B'), heap.peek())
         self.assertEqual([
             Entry(MinIntKey(5), 'B'),
             Entry(MinIntKey(14), 'A'),
@@ -111,7 +111,7 @@ class TestBinaryMinHeap(TestCase):
         with self.assertRaises(IndexError):
             heap.change_key(9, MinIntKey(20))
         heap.change_key(8, MinIntKey(4))
-        self.assertEqual(Entry(MinIntKey(4), 'I'), heap.peak())
+        self.assertEqual(Entry(MinIntKey(4), 'I'), heap.peek())
 
     def test_delete(self):
         heap = Heap[MinIntKey, str](2, [])

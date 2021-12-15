@@ -6,15 +6,15 @@ from src.stack import Stack
 
 
 class ValidationResult:
-    def __init__(self, error_index: int = None) -> None:
+    def __init__(self, error_index: int = None):
         self.__error_index = error_index
 
     def __str__(self) -> str:
-        return "Success" if self.__error_index is None else str(self.__error_index)
+        return 'Success' if self.__error_index is None else str(self.__error_index)
 
 
 class BracketRuleValidation:
-    def __init__(self) -> None:
+    def __init__(self):
         self.__bracket_pairs: Dict[str, str] = {')': '(', ']': '[', '}': '{'}
         self.__opening_brackets: Set[str] = set(self.__bracket_pairs.values())
         self.__closing_brackets: Set[str] = set(self.__bracket_pairs.keys())

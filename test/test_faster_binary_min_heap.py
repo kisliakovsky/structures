@@ -43,7 +43,7 @@ class TestFasterBinaryMinHeap(TestCase):
         self.assertEqual(29, heap.pop())
         self.assertEqual(42, heap.pop())
 
-    def test_peak(self):
+    def test_peek(self):
         heap = FasterMinHeap([])
         heap.push(14)
         heap.push(5)
@@ -54,7 +54,7 @@ class TestFasterBinaryMinHeap(TestCase):
         heap.push(11)
         heap.push(18)
         heap.push(29)
-        self.assertEqual(5, heap.peak())
+        self.assertEqual(5, heap.peek())
         self.assertEqual([5, 14, 7, 18, 42, 12, 11, 18, 29], heap.as_list())
 
     def test_change_key(self):
@@ -71,7 +71,7 @@ class TestFasterBinaryMinHeap(TestCase):
         with self.assertRaises(IndexError):
             heap.change_key(9, 20)
         heap.change_key(8, 4)
-        self.assertEqual(4, heap.peak())
+        self.assertEqual(4, heap.peek())
 
     def test_is_empty(self):
         heap = FasterMinHeap([])

@@ -17,7 +17,7 @@ class AbstractStack(ABC, Generic[Item]):
         pass
 
     @abstractmethod
-    def peak(self) -> Item:
+    def peek(self) -> Item:
         pass
 
     @abstractmethod
@@ -36,7 +36,7 @@ class Stack(AbstractStack[Item]):
     def push(self, item: Item) -> None:
         self.__data.append(item)
 
-    def peak(self) -> Item:
+    def peek(self) -> Item:
         return self.__data[-1]
 
     def pop(self) -> Item:
@@ -48,7 +48,7 @@ class Stack(AbstractStack[Item]):
     def as_list(self) -> List[Item]:
         return self.__data[:]
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self.__data)
 
 
@@ -63,7 +63,7 @@ class StackWithMaxValue(AbstractStack[int]):
             self.__maximums.push(item)
         else:
             self.__stack.push(item)
-            maximum = self.__maximums.peak()
+            maximum = self.__maximums.peek()
             if item > maximum:
                 self.__maximums.push(item)
             else:
@@ -73,11 +73,11 @@ class StackWithMaxValue(AbstractStack[int]):
         self.__maximums.pop()
         return self.__stack.pop()
 
-    def peak(self) -> int:
-        return self.__stack.peak()
+    def peek(self) -> int:
+        return self.__stack.peek()
 
     def maximum(self) -> Optional[int]:
-        return self.__maximums.peak()
+        return self.__maximums.peek()
 
     def is_empty(self) -> bool:
         return self.__stack.is_empty()

@@ -34,7 +34,7 @@ class TreeNode(TreeHeight, Generic[Value]):
     def height(self) -> int:
         return max(map(lambda node: node.height() + 1, self.__children)) if self.__children else 1
 
-    def value(self):
+    def value(self) -> Value:
         return self.__value
 
 
@@ -64,7 +64,7 @@ class ParentsTree(TreeHeight):
 class ChildrenTree(TreeHeight):
     def __init__(self, root: int, children_by_parents: List[List[int]]):
         if len(children_by_parents[root]) == 0:
-            raise ValueError("Root must have children")
+            raise ValueError('Root must have children')
         self.__root = root
         self.__children_by_parents: List[List[int]] = children_by_parents
         self.__heights: List[int] = [0 for _ in children_by_parents]
@@ -81,7 +81,7 @@ class ChildrenTree(TreeHeight):
         return max(self.__heights)
 
     @staticmethod
-    def children_tree(parents: List[int]):
+    def children_tree(parents: List[int]) -> 'ChildrenTree':
         children_by_parents = [[] for _ in parents]
         root = None
         for child, parent in enumerate(parents):
@@ -90,5 +90,5 @@ class ChildrenTree(TreeHeight):
             else:
                 root = child
         if root is None:
-            raise ValueError("Root must be specified")
+            raise ValueError('Root must be specified')
         return ChildrenTree(root, children_by_parents)

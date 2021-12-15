@@ -73,7 +73,7 @@ class TestBinaryMaxHeap(TestCase):
         self.assertEqual(Entry(MaxIntKey(7), 'C'), heap.pop())
         self.assertEqual(Entry(MaxIntKey(5), 'B'), heap.pop())
 
-    def test_peak(self):
+    def test_peek(self):
         heap = Heap[MaxIntKey, str](3, [])
         heap.push(Entry(MaxIntKey(14), 'A'))
         heap.push(Entry(MaxIntKey(5), 'B'))
@@ -84,7 +84,7 @@ class TestBinaryMaxHeap(TestCase):
         heap.push(Entry(MaxIntKey(11), 'G'))
         heap.push(Entry(MaxIntKey(18), 'H'))
         heap.push(Entry(MaxIntKey(29), 'I'))
-        self.assertEqual(Entry(MaxIntKey(42), 'E'), heap.peak())
+        self.assertEqual(Entry(MaxIntKey(42), 'E'), heap.peek())
         self.assertEqual([
             Entry(MaxIntKey(42), 'E'),
             Entry(MaxIntKey(18), 'D'),
@@ -111,7 +111,7 @@ class TestBinaryMaxHeap(TestCase):
         with self.assertRaises(IndexError):
             heap.change_key(9, MaxIntKey(20))
         heap.change_key(8, MaxIntKey(43))
-        self.assertEqual(Entry(MaxIntKey(43), 'H'), heap.peak())
+        self.assertEqual(Entry(MaxIntKey(43), 'H'), heap.peek())
 
     def test_delete(self):
         heap = Heap[MaxIntKey, str](3, [])

@@ -34,22 +34,22 @@ class DisjointSet(AbstractDisjointSet[Value]):
 
     def make_set(self, i: int, value: Value) -> None:
         if i >= self.__size:
-            raise IndexError("index out of range")
+            raise IndexError('index out of range')
         if self.__parents[i] is not None:
-            raise ValueError("set already made")
+            raise ValueError('set already made')
         self.__parents[i] = i
         self.__values[i] = value
         self.__ranks[i] = 1
 
     def find(self, i: int) -> int:
         if i >= self.__size:
-            raise IndexError("index out of range")
+            raise IndexError('index out of range')
         return self.__find(i)
 
     def __find(self, i: int) -> int:
         parent = self.__parents[i]
         if parent is None:
-            raise ValueError("item does not exist")
+            raise ValueError('item does not exist')
         if i != parent:
             parent = self.__find(self.__parents[i])
             self.__parents[i] = parent
@@ -57,11 +57,11 @@ class DisjointSet(AbstractDisjointSet[Value]):
 
     def union(self, i: int, j: int) -> None:
         if i >= self.__size or j >= self.__size:
-            raise IndexError("index out of range")
+            raise IndexError('index out of range')
         i_root = self.__find(i)
         j_root = self.__find(j)
         if i_root is None or j_root is None:
-            raise ValueError("items do not exist")
+            raise ValueError('items do not exist')
         i_rank = self.__ranks[i_root]
         j_rank = self.__ranks[j_root]
         if i_rank > j_rank:
@@ -77,7 +77,7 @@ class DisjointSet(AbstractDisjointSet[Value]):
     def __as_list(self) -> List[Tuple[int, Value]]:
         return [(self.__values[i], self.__find(i)) for i in range(self.__size)]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self.__as_list())
 
 
