@@ -1,4 +1,3 @@
-from random import randint
 from unittest import TestCase
 
 from src.packet_processor import CustomParallelPacketProcessor

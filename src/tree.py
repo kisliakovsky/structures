@@ -1,7 +1,7 @@
 """This module contains implementations of 'tree' data structure"""
 
 from abc import ABC, abstractmethod
-from typing import TypeVar, Generic, List, Optional, Tuple
+from typing import TypeVar, Generic, List, Optional, Tuple, Iterator
 
 from src.stack import Stack
 
@@ -98,19 +98,30 @@ class BinaryChildrenTree(Generic[Value]):
     def __init__(self, children_by_parents: List[Tuple[Value, int, int]]):
         self.__children_by_parents = children_by_parents
 
-    def walk_in_order(self) -> List[int]:
-        result = []
+    def is_search_tree(self) -> bool:
+        result = True
         if self.__children_by_parents:
-            self.__walk_in_order(0, result)
+            values = self.__walk_in_order()
+            last_value = next(self.__walk_in_order())
+            for value in values:
+                if last_value > value:
+                    result = False
+                    break
+                last_value = value
         return result
 
-    def __walk_in_order(self, i: int, result: List[int]):
-        value, left_i, right_i = self.__children_by_parents[i]
-        if left_i != -1:
-            self.__walk_in_order(left_i, result)
-        result.append(value)
-        if right_i != -1:
-            self.__walk_in_order(right_i, result)
+    def walk_in_order(self) -> List[int]:
+        return list(self.__walk_in_order()) if self.__children_by_parents else []
+
+    def __walk_in_order(self) -> Iterator[Value]:
+        nodes = Stack[Tuple[Value, int, int]]()
+        i = 0
+        while not (i == -1 and nodes.is_empty()):
+            while i != -1:
+                nodes.push(self.__children_by_parents[i])
+                _, i, _ = nodes.peek()
+            value, _, i = nodes.pop()
+            yield value
 
     def walk_pre_order(self) -> List[int]:
         result = []
@@ -118,8 +129,8 @@ class BinaryChildrenTree(Generic[Value]):
             self.__walk_pre_order(0, result)
         return result
 
-    def __walk_pre_order(self, i: int, result: List[int]):
-        value, left_i, right_i = self.__children_by_parents[i]
+    def __walk_pre_order(self, root_i: int, result: List[int]):
+        value, left_i, right_i = self.__children_by_parents[root_i]
         result.append(value)
         if left_i != -1:
             self.__walk_pre_order(left_i, result)
@@ -132,8 +143,8 @@ class BinaryChildrenTree(Generic[Value]):
             self.__walk_post_order(0, result)
         return result
 
-    def __walk_post_order(self, i: int, result: List[int]):
-        value, left_i, right_i = self.__children_by_parents[i]
+    def __walk_post_order(self, root_i: int, result: List[int]):
+        value, left_i, right_i = self.__children_by_parents[root_i]
         if left_i != -1:
             self.__walk_post_order(left_i, result)
         if right_i != -1:
