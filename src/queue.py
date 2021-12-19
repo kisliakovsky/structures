@@ -73,7 +73,6 @@ class FullQueueError(Exception):
 
 
 class LimitedQueue(AbstractQueue[Item]):
-
     def __init__(self, max_len: int):
         self.__queue = Queue[Item]([])
         self.__max_len = max_len

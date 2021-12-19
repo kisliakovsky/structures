@@ -1,7 +1,7 @@
 """This module contains implementations of 'tree' data structure"""
 
 from abc import ABC, abstractmethod
-from typing import TypeVar, Generic, List, Optional
+from typing import TypeVar, Generic, List, Optional, Tuple
 
 from src.stack import Stack
 
@@ -92,3 +92,50 @@ class ChildrenTree(TreeHeight):
         if root is None:
             raise ValueError('Root must be specified')
         return ChildrenTree(root, children_by_parents)
+
+
+class BinaryChildrenTree(Generic[Value]):
+    def __init__(self, children_by_parents: List[Tuple[Value, int, int]]):
+        self.__children_by_parents = children_by_parents
+
+    def walk_in_order(self) -> List[int]:
+        result = []
+        if self.__children_by_parents:
+            self.__walk_in_order(0, result)
+        return result
+
+    def __walk_in_order(self, i: int, result: List[int]):
+        value, left_i, right_i = self.__children_by_parents[i]
+        if left_i != -1:
+            self.__walk_in_order(left_i, result)
+        result.append(value)
+        if right_i != -1:
+            self.__walk_in_order(right_i, result)
+
+    def walk_pre_order(self) -> List[int]:
+        result = []
+        if self.__children_by_parents:
+            self.__walk_pre_order(0, result)
+        return result
+
+    def __walk_pre_order(self, i: int, result: List[int]):
+        value, left_i, right_i = self.__children_by_parents[i]
+        result.append(value)
+        if left_i != -1:
+            self.__walk_pre_order(left_i, result)
+        if right_i != -1:
+            self.__walk_pre_order(right_i, result)
+
+    def walk_post_order(self) -> List[int]:
+        result = []
+        if self.__children_by_parents:
+            self.__walk_post_order(0, result)
+        return result
+
+    def __walk_post_order(self, i: int, result: List[int]):
+        value, left_i, right_i = self.__children_by_parents[i]
+        if left_i != -1:
+            self.__walk_post_order(left_i, result)
+        if right_i != -1:
+            self.__walk_post_order(right_i, result)
+        result.append(value)
