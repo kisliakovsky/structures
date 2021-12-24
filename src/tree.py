@@ -6,6 +6,7 @@ from typing import TypeVar, Generic, List, Optional, Tuple, Iterator
 from src.stack import Stack, MinMaxStack
 
 Value = TypeVar('Value')
+GenericBinaryTreeNode = TypeVar('GenericBinaryTreeNode', bound='AbstractBinaryTreeNode')
 
 
 class TreeHeight(ABC):
@@ -94,8 +95,46 @@ class ChildrenTree(TreeHeight):
         return ChildrenTree(root, children_by_parents)
 
 
-class BinaryTreeNode(Generic[Value]):
-    def __init__(self, index: int, value: Value, left_index: int, right_index: int, nodes: List['BinaryTreeNode']):
+class AbstractBinaryTreeNode(ABC, Generic[GenericBinaryTreeNode, Value]):
+
+    @abstractmethod
+    def has_left_child(self) -> bool:
+        pass
+
+    @abstractmethod
+    def has_right_child(self) -> bool:
+        pass
+
+    @abstractmethod
+    def is_in_range(
+            self,
+            minumum: 'Optional[GenericBinaryTreeNode[Value]]',
+            maximum: 'Optional[GenericBinaryTreeNode[Value]]'
+    ) -> bool:
+        pass
+
+    @abstractmethod
+    def left_child(self) -> 'Optional[GenericBinaryTreeNode[Value]]':
+        pass
+
+    @abstractmethod
+    def right_child(self) -> 'Optional[GenericBinaryTreeNode[Value]]':
+        pass
+
+    @abstractmethod
+    def put_value(self, values: List[Value]) -> None:
+        pass
+
+
+class BinaryTreeNode(AbstractBinaryTreeNode['BinaryTreeNode', Value]):
+    def __init__(
+            self,
+            index: int,
+            value: Value,
+            left_index: int,
+            right_index: int,
+            nodes: List['BinaryTreeNode[Value]']
+    ):
         self.__index = index
         self.__value = value
         self.__left_index = left_index
