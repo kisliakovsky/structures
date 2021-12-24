@@ -3,7 +3,7 @@ from unittest import TestCase
 from src.tree import ParentsTree
 
 
-class TestTreeNode(TestCase):
+class TestParentsTree(TestCase):
 
     def test_height(self):
         tree = ParentsTree([4, -1, 4, 1, 1])

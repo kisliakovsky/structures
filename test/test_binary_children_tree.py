@@ -55,6 +55,17 @@ class TestBinaryChildrenTree(TestCase):
         ])
         self.assertTrue(tree.is_search_tree())
 
+    def test_is_search_tree_on_search_tree_with_equal_values(self):
+        tree = BinaryChildrenTree([
+            (4, 1, 2),
+            (1, -1, 3),
+            (5, -1, -1),
+            (2, -1, 4),
+            (3, 5, -1),
+            (2, -1, -1)
+        ])
+        self.assertTrue(tree.is_search_tree())
+
     def test_is_search_tree_on_simplest_non_search_tree(self):
         tree = BinaryChildrenTree([
             (1, 1, 2),

@@ -3,7 +3,7 @@
 from abc import ABC, abstractmethod
 from typing import TypeVar, Generic, List, Optional, Tuple, Iterator
 
-from src.stack import Stack
+from src.stack import Stack, MinMaxStack
 
 Value = TypeVar('Value')
 
@@ -94,59 +94,129 @@ class ChildrenTree(TreeHeight):
         return ChildrenTree(root, children_by_parents)
 
 
+class BinaryTreeNode(Generic[Value]):
+    def __init__(self, index: int, value: Value, left_index: int, right_index: int, nodes: List['BinaryTreeNode']):
+        self.__index = index
+        self.__value = value
+        self.__left_index = left_index
+        self.__right_index = right_index
+        self.__nodes = nodes
+
+    def has_left_child(self) -> bool:
+        return self.__left_index != -1
+
+    def has_right_child(self) -> bool:
+        return self.__right_index != -1
+
+    def __lt__(self, other: 'BinaryTreeNode[Value]') -> bool:
+        return self.__value < other.__value
+
+    def __gt__(self, other: 'BinaryTreeNode[Value]') -> bool:
+        return self.__value > other.__value
+
+    def is_in_range(
+            self,
+            minumum: 'Optional[BinaryTreeNode[Value]]',
+            maximum: 'Optional[BinaryTreeNode[Value]]'
+    ) -> bool:
+        minumum_condition = minumum is None or minumum.__value <= self.__value
+        maximum_condition = maximum is None or self.__value < maximum.__value
+        return minumum_condition and maximum_condition
+
+    def left_child(self) -> 'Optional[BinaryTreeNode[Value]]':
+        if self.__left_index == -1:
+            raise IndexError('Left child does not exist')
+        return self.__nodes[self.__left_index]
+
+    def right_child(self) -> 'Optional[BinaryTreeNode[Value]]':
+        if self.__right_index == -1:
+            raise IndexError('Right child does not exist')
+        return self.__nodes[self.__right_index]
+
+    def put_value(self, values: List[Value]) -> None:
+        values.append(self.__value)
+
+    def __str__(self) -> str:
+        return str(f'Index {self.__index}, Value {self.__value}')
+
+    def __repr__(self) -> str:
+        return str(f'Index {self.__index}, Value {self.__value}')
+
+
 class BinaryChildrenTree(Generic[Value]):
     def __init__(self, children_by_parents: List[Tuple[Value, int, int]]):
-        self.__children_by_parents = children_by_parents
+        self.__nodes = []
+        for i, entry in enumerate(children_by_parents):
+            value, left_i, right_i = entry
+            self.__nodes.append(BinaryTreeNode(i, value, left_i, right_i, self.__nodes))
 
     def is_search_tree(self) -> bool:
         result = True
-        if self.__children_by_parents:
-            values = self.__walk_in_order()
-            last_value = next(self.__walk_in_order())
-            for value in values:
-                if last_value > value:
+        if self.__nodes:
+            nodes = Stack[BinaryTreeNode]()
+            root = self.__nodes[0]
+            min_and_max = MinMaxStack[BinaryTreeNode]()
+            while not (nodes.is_empty() and root is None):
+                while root is not None:
+                    nodes.push(root)
+                    if root.has_left_child():
+                        min_and_max.push((None, root))
+                        root = root.left_child()
+                    else:
+                        root = None
+                root = nodes.pop()
+                min_node, max_node = min_and_max.peek() if not min_and_max.is_empty() else (None, None)
+                if not root.is_in_range(min_node, max_node):
                     result = False
                     break
-                last_value = value
+                if root.has_right_child():
+                    min_and_max.pop_and_push((root, None))
+                    root = root.right_child()
+                else:
+                    root = None
+                    if not min_and_max.is_empty():
+                        min_and_max.pop()
         return result
 
     def walk_in_order(self) -> List[int]:
-        return list(self.__walk_in_order()) if self.__children_by_parents else []
+        values = []
+        for node in self.__walk_in_order():
+            node.put_value(values)
+        return values
 
-    def __walk_in_order(self) -> Iterator[Value]:
-        nodes = Stack[Tuple[Value, int, int]]()
-        i = 0
-        while not (i == -1 and nodes.is_empty()):
-            while i != -1:
-                nodes.push(self.__children_by_parents[i])
-                _, i, _ = nodes.peek()
-            value, _, i = nodes.pop()
-            yield value
+    def __walk_in_order(self) -> Iterator[BinaryTreeNode]:
+        nodes = Stack[BinaryTreeNode]()
+        root = self.__nodes[0]
+        while not (nodes.is_empty() and root is None):
+            while root is not None:
+                nodes.push(root)
+                root = root.left_child() if root.has_left_child() else None
+            node = nodes.pop()
+            root = node.right_child() if node.has_right_child() else None
+            yield node
 
     def walk_pre_order(self) -> List[int]:
         result = []
-        if self.__children_by_parents:
-            self.__walk_pre_order(0, result)
+        if self.__nodes:
+            self.__walk_pre_order(self.__nodes[0], result)
         return result
 
-    def __walk_pre_order(self, root_i: int, result: List[int]):
-        value, left_i, right_i = self.__children_by_parents[root_i]
-        result.append(value)
-        if left_i != -1:
-            self.__walk_pre_order(left_i, result)
-        if right_i != -1:
-            self.__walk_pre_order(right_i, result)
+    def __walk_pre_order(self, root: BinaryTreeNode[int], result: List[int]) -> None:
+        root.put_value(result)
+        if root.has_left_child():
+            self.__walk_pre_order(root.left_child(), result)
+        if root.has_right_child():
+            self.__walk_pre_order(root.right_child(), result)
 
     def walk_post_order(self) -> List[int]:
         result = []
-        if self.__children_by_parents:
-            self.__walk_post_order(0, result)
+        if self.__nodes:
+            self.__walk_post_order(self.__nodes[0], result)
         return result
 
-    def __walk_post_order(self, root_i: int, result: List[int]):
-        value, left_i, right_i = self.__children_by_parents[root_i]
-        if left_i != -1:
-            self.__walk_post_order(left_i, result)
-        if right_i != -1:
-            self.__walk_post_order(right_i, result)
-        result.append(value)
+    def __walk_post_order(self, root: BinaryTreeNode[int], result: List[int]) -> None:
+        if root.has_left_child():
+            self.__walk_post_order(root.left_child(), result)
+        if root.has_right_child():
+            self.__walk_post_order(root.right_child(), result)
+        root.put_value(result)
