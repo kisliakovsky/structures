@@ -1,4 +1,4 @@
-name: Pylint
+name: CI
 
 on: [push]
 
@@ -21,4 +21,6 @@ jobs:
     - name: Analysing the code with pylint
       run: |
         pylint src
+    - name: Running tests
+      run: |
         pytest
