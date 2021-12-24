@@ -143,9 +143,9 @@ class BinaryTreeNode(Generic[Value]):
         return str(f'Index {self.__index}, Value {self.__value}')
 
 
-class BinaryChildrenTree(Generic[Value]):
+class BinaryTree(Generic[Value]):
     def __init__(self, children_by_parents: List[Tuple[Value, int, int]]):
-        self.__nodes = []
+        self.__nodes: List[BinaryTreeNode] = []
         for i, entry in enumerate(children_by_parents):
             value, left_i, right_i = entry
             self.__nodes.append(BinaryTreeNode(i, value, left_i, right_i, self.__nodes))
