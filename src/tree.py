@@ -145,7 +145,7 @@ class BinaryTreeNode(Generic[Value]):
 
 class BinaryTree(Generic[Value]):
     def __init__(self, children_by_parents: List[Tuple[Value, int, int]]):
-        self.__nodes: List[BinaryTreeNode] = []
+        self.__nodes: List[BinaryTreeNode[Value]] = []
         for i, entry in enumerate(children_by_parents):
             value, left_i, right_i = entry
             self.__nodes.append(BinaryTreeNode(i, value, left_i, right_i, self.__nodes))
@@ -153,9 +153,9 @@ class BinaryTree(Generic[Value]):
     def is_search_tree(self) -> bool:
         result = True
         if self.__nodes:
-            nodes = Stack[BinaryTreeNode]()
+            nodes = Stack[BinaryTreeNode[Value]]()
             root = self.__nodes[0]
-            min_and_max = MinMaxStack[BinaryTreeNode]()
+            min_and_max = MinMaxStack[BinaryTreeNode[Value]]()
             while not (nodes.is_empty() and root is None):
                 while root is not None:
                     nodes.push(root)
@@ -184,8 +184,8 @@ class BinaryTree(Generic[Value]):
             node.put_value(values)
         return values
 
-    def __walk_in_order(self) -> Iterator[BinaryTreeNode]:
-        nodes = Stack[BinaryTreeNode]()
+    def __walk_in_order(self) -> Iterator[BinaryTreeNode[Value]]:
+        nodes = Stack[BinaryTreeNode[Value]]()
         root = self.__nodes[0]
         while not (nodes.is_empty() and root is None):
             while root is not None:
@@ -195,13 +195,13 @@ class BinaryTree(Generic[Value]):
             root = node.right_child() if node.has_right_child() else None
             yield node
 
-    def walk_pre_order(self) -> List[int]:
+    def walk_pre_order(self) -> List[Value]:
         result = []
         if self.__nodes:
             self.__walk_pre_order(self.__nodes[0], result)
         return result
 
-    def __walk_pre_order(self, root: BinaryTreeNode[int], result: List[int]) -> None:
+    def __walk_pre_order(self, root: BinaryTreeNode[Value], result: List[int]) -> None:
         root.put_value(result)
         if root.has_left_child():
             self.__walk_pre_order(root.left_child(), result)
@@ -214,7 +214,7 @@ class BinaryTree(Generic[Value]):
             self.__walk_post_order(self.__nodes[0], result)
         return result
 
-    def __walk_post_order(self, root: BinaryTreeNode[int], result: List[int]) -> None:
+    def __walk_post_order(self, root: BinaryTreeNode[Value], result: List[int]) -> None:
         if root.has_left_child():
             self.__walk_post_order(root.left_child(), result)
         if root.has_right_child():
