@@ -517,7 +517,10 @@ exclude-protected=_asdict,
                   __i,
                   __time,
                   __data,
-                  __number_of_buckets
+                  __number_of_buckets,
+                  __height,
+                  __index,
+                  __parent
 
 # List of valid names for the first argument in a class method.
 valid-classmethod-first-arg=cls
@@ -537,7 +540,7 @@ exclude-too-few-public-methods=.+
 ignored-parents=
 
 # Maximum number of arguments for function / method.
-max-args=7
+max-args=8
 
 # Maximum number of attributes for a class (see R0902).
 max-attributes=7
